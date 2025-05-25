@@ -4,24 +4,25 @@
   import { currentBlockchain } from '$lib/stores/blockchain';
   import { TrendingUp, DollarSign, Activity, Zap } from 'lucide-svelte';
   
-  const stats = [
+  // Declare store values at top level
+  $: stats = [
     {
       label: 'Total Collateral',
-      value: totalCollateral,
+      value: $totalCollateral,
       icon: DollarSign,
       color: 'purple',
       format: (v: number) => `${v.toFixed(4)} ${$currentBlockchain.symbol}`
     },
     {
       label: 'Open Positions',
-      value: openPositions,
+      value: $openPositions,
       icon: Activity,
       color: 'orange',
       format: (v: any) => v.length.toString()
     },
     {
       label: 'Total PnL',
-      value: totalPnL,
+      value: $totalPnL,
       icon: TrendingUp,
       color: 'green',
       format: (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(4)} ${$currentBlockchain.symbol}`
@@ -48,7 +49,7 @@
             <div>
               <p class="text-sm text-gray-400 mb-2">{stat.label}</p>
               <p class="text-2xl font-mono font-semibold">
-                {stat.format($stat.value)}
+                {stat.format(stat.value)}
               </p>
             </div>
             <div class="p-3 bg-{stat.color}-500/20 rounded-lg">
