@@ -5,6 +5,7 @@
   import { connectWallet, disconnectWallet, restoreWalletSession } from '$lib/services/wallet';
   import { config } from '$lib/config/wagmi';
   import { Wallet, X, ChevronDown } from 'lucide-svelte';
+  import { portal } from '$lib/utils/portal';
 
   let showModal = false;
   let connectingConnector: string | null = null;
@@ -117,8 +118,9 @@
 
   <!-- Wallet Selection Modal -->
   {#if showModal}
-    <div 
+    <div
       class="modal-backdrop"
+      use:portal
       on:click={handleBackdropClick}
       on:keydown={handleBackdropKeydown}
       role="dialog"
