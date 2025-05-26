@@ -4,7 +4,7 @@ import { getMarketData, type MarketData } from '$lib/services/offers';
 
 // Create the store with initial state
 export const markets = writable<MarketData[]>([]);
-export const selectedMarket = writable<string>('BNB-BNB-PERP');
+export const selectedMarket = writable<string>('Loading...');
 export const currentMarket = writable<MarketData | null>(null);
 export const loading = writable<boolean>(true);
 

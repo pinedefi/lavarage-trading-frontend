@@ -95,6 +95,8 @@ export function formatPrice(price: number): string {
     return `${price.toFixed(4)}`;
   } else if (price >= 0.000001) {
     return `${price.toFixed(6)}`;
+  } else if (isNaN(price)) {
+    return '--';
   } else {
     // Count leading zeros after decimal point
     const leadingZeros = Math.abs(Math.floor(Math.log10(price))) - 1;
