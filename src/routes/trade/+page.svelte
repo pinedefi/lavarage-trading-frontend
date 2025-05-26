@@ -48,11 +48,7 @@
     <div class="lg:col-span-2 space-y-6">
       <div class="card">
         <div class="trade-header">
-          <MarketSelectorButton 
-            currentPrice={currentPrice}
-            priceChange24h={priceChange24h}
-            on:marketChange={handleMarketChange}
-          />
+          <MarketSelectorButton on:marketChange={handleMarketChange} />
         </div>
         
         <div class="grid grid-cols-2 gap-4 mb-6">

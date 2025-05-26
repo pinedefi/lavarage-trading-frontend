@@ -4,6 +4,8 @@ import { auth } from '$lib/stores/auth';
 import { browser } from '$app/environment';
 import type { Connector } from '@wagmi/core';
 
+type ChainId = (typeof config.chains)[number]['id'];
+
 export interface WalletProfile {
   id: string;
   walletAddress: string;
@@ -101,7 +103,7 @@ export function getCurrentAccount() {
 }
 
 // Switch network
-export async function switchNetwork(chainId: number): Promise<void> {
+export async function switchNetwork(chainId: ChainId): Promise<void> {
   try {
     await switchChain(config, { chainId });
   } catch (error) {

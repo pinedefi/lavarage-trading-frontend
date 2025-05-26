@@ -3,7 +3,7 @@
   import { blockchain } from '$lib/stores/blockchain';
   import { positions } from '$lib/stores/positions';
   import { Zap, TrendingUp } from 'lucide-svelte';
-  import { getMarketData, getMockMarketData, type MarketData } from '$lib/services/offers';
+  import { getMarketData, type MarketData } from '$lib/services/offers';
   import { selectedMarket as selectedMarketStore } from '$lib/stores/markets';
   import { onMount } from 'svelte';
   
@@ -20,12 +20,9 @@
   async function loadMarkets() {
     try {
       markets = await getMarketData();
-      if (markets.length === 0) {
-        markets = getMockMarketData();
-      }
     } catch (error) {
       console.error('Failed to load markets:', error);
-      markets = getMockMarketData();
+      markets = [];
     } finally {
       loading = false;
     }
