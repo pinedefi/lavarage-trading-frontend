@@ -94,7 +94,7 @@
   <div class="space-y-6">
     <div>
       <label for="collateral-input" class="block text-sm font-medium text-gray-300 mb-2">
-        Collateral ({tokenSymbol})
+        Collateral (BNB)
       </label>
       <input
         id="collateral-input"
