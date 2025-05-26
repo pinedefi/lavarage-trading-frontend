@@ -17,7 +17,7 @@ export interface OpenPositionParams {
 
 interface OpenBscPositionDto {
   collateralAddress: string;
-  margin: number;
+  margin: string;
   leverage: number;
   quoteToken: string;
   userPubKey: string;
@@ -33,7 +33,7 @@ interface TransactionBscModel {
   txHash?: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://api.lavarage.com/api/sdk/v1.0';
+const API_URL = import.meta.env.VITE_API_URL || 'https://ng-api.lavarave.wtf/api/sdk/v1.0';
 const API_KEY = import.meta.env.VITE_API_KEY || '';
 
 export async function openLongPosition(params: OpenPositionParams): Promise<string> {
@@ -42,7 +42,7 @@ export async function openLongPosition(params: OpenPositionParams): Promise<stri
 
   const body: OpenBscPositionDto = {
     collateralAddress: params.collateralAddress,
-    margin: params.collateral,
+    margin: (BigInt(Math.round(params.collateral * 1000000)) * BigInt(1000000000000)).toString(),
     leverage: params.leverage,
     quoteToken: params.quoteToken,
     userPubKey: account.address,

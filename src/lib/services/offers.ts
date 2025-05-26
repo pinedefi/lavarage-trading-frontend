@@ -54,7 +54,7 @@ export interface MarketData {
   priceVsQuote: string;
 }
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ng-api.lavarave.wtf/api/sdk/v1.0';
 const API_KEY = import.meta.env.VITE_LAVARAGE_API_KEY || 'your_api_key_here';
 
 export async function fetchBscOffers(): Promise<OfferEvmModel[]> {
@@ -63,7 +63,7 @@ export async function fetchBscOffers(): Promise<OfferEvmModel[]> {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/sdk/v1.0/offers/bsc`, {
+    const response = await fetch(`${API_BASE_URL}/offers/bsc`, {
       method: 'GET',
       headers: {
         'x-api-key': API_KEY,
