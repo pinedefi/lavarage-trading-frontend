@@ -309,8 +309,10 @@
   .search-icon {
     position: absolute;
     left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
     color: rgba(255, 255, 255, 0.4);
     pointer-events: none;
   }

@@ -171,7 +171,7 @@
     </div>
     
     <button
-      class="btn-primary w-full"
+      class="btn-primary w-full inline-flex items-center justify-center gap-2"
       on:click={openPosition}
       disabled={!$isAuthenticated || isOpening || collateral <= 0}
     >
