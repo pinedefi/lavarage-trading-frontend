@@ -1,43 +1,44 @@
-# Crypto Trading Platform
+# Leverage Trading Frontend
 
-A modern, professional crypto trading platform built with SvelteKit, featuring leveraged trading and position management.
+A modern, responsive web application for decentralized leverage trading built with SvelteKit and TypeScript.
 
 ## Features
 
-- **Leveraged Trading**: Open long positions with up to 100x leverage
-- **Position Management**: Monitor and manage open positions in real-time
-- **Multi-Blockchain Ready**: Designed to support Ethereum, Solana, and Sui (currently Ethereum only)
-- **Dynamic.xyz Integration**: Secure wallet authentication
-- **Modern UI**: Dark theme with red, purple, and orange accents
-- **Responsive Design**: Works seamlessly on desktop and mobile
+- **Modern UI/UX**: Clean, responsive design with dark/light theme support
+- **Multi-Blockchain Ready**: Designed to support BSC, Solana, and Sui (currently BSC only)
+- **Real-time Trading**: Live price feeds and order management
+- **Wallet Integration**: Seamless wallet connection with Wagmi
+- **Position Management**: Track and manage leveraged positions
+- **Risk Management**: Built-in liquidation protection and risk metrics
 
 ## Tech Stack
 
-- **Framework**: SvelteKit
-- **Styling**: TailwindCSS with custom design system
-- **Authentication**: Dynamic.xyz SDK
-- **Icons**: Lucide Svelte
-- **Blockchain**: Ethers.js (ready for multi-chain expansion)
-- **Type Safety**: TypeScript
+- **Frontend**: SvelteKit, TypeScript, Tailwind CSS
+- **Authentication**: Wagmi wallet connection
+- **State Management**: Svelte stores
+- **Blockchain**: Wagmi (ready for multi-chain expansion)
+- **Build Tool**: Vite
+- **Package Manager**: pnpm
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ 
-- npm or yarn
+- pnpm
+- A BSC wallet (MetaMask, etc.)
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/piske-alex/leverage-trading-frontend.git
+git clone <repository-url>
 cd leverage-trading-frontend
 ```
 
 2. Install dependencies:
 ```bash
-npm install
+pnpm install
 ```
 
 3. Set up environment variables:
@@ -45,53 +46,78 @@ npm install
 cp .env.example .env
 ```
 
-Add your Dynamic.xyz environment ID and other configuration.
-
-4. Run the development server:
-```bash
-npm run dev
+Edit `.env` with your configuration:
+```env
+VITE_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
+VITE_BSC_RPC_URL=https://bsc-dataseed1.binance.org/
+VITE_DEFAULT_NETWORK=bsc
 ```
 
-Visit `http://localhost:5173` to see the application.
+4. Start the development server:
+```bash
+pnpm dev
+```
+
+5. Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ## Project Structure
 
 ```
 src/
-├── routes/          # SvelteKit routes
 ├── lib/
-│   ├── components/  # Reusable UI components
-│   ├── stores/      # Svelte stores for state management
-│   ├── services/    # API and blockchain services
-│   └── utils/       # Helper functions
-├── app.css          # Global styles
-└── app.html         # HTML template
+│   ├── components/     # Reusable UI components
+│   ├── stores/         # Svelte stores for state management
+│   ├── services/       # Business logic and API calls
+│   ├── utils/          # Utility functions
+│   └── types/          # TypeScript type definitions
+├── routes/             # SvelteKit routes
+└── app.html           # HTML template
 ```
 
 ## Key Components
 
-- **TradingPanel**: Main interface for opening leveraged positions
-- **PositionCard**: Displays individual position details
-- **LeverageSlider**: Interactive leverage selection
-- **AuthButton**: Dynamic.xyz wallet connection
+- **TradingPanel**: Main trading interface
+- **PositionManager**: Position tracking and management
+- **WalletWidget**: Wallet connection and management
+- **PriceChart**: Real-time price visualization
 
-## Design Guidelines
+## Development
 
-- Keep files under 500 lines
-- Use TypeScript for type safety
-- Follow the established color scheme
-- Maintain blockchain-agnostic architecture
+### Available Scripts
 
-## Future Enhancements
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm check` - Run type checking
+- `pnpm lint` - Run ESLint
+- `pnpm format` - Format code with Prettier
 
-- [ ] Short positions
-- [ ] Advanced order types (stop-loss, take-profit)
-- [ ] Solana blockchain support
-- [ ] Sui blockchain support
-- [ ] Real-time price charts
-- [ ] Trading history
-- [ ] Portfolio analytics
+### Code Style
+
+This project uses:
+- ESLint for code linting
+- Prettier for code formatting
+- TypeScript for type safety
+
+## Deployment
+
+1. Build the application:
+```bash
+pnpm build
+```
+
+2. The built files will be in the `build/` directory
+
+3. Deploy to your preferred hosting platform (Vercel, Netlify, etc.)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the LICENSE file for details.

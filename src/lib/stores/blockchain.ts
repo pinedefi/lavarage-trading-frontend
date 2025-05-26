@@ -1,89 +1,95 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 
-export type SupportedBlockchain = 'ethereum' | 'solana' | 'sui';
+export type SupportedBlockchain = 'bsc' | 'solana' | 'sui';
 
 export interface BlockchainConfig {
-  id: SupportedBlockchain;
+  id: string;
   name: string;
   symbol: string;
-  icon: string;
-  chainId?: number;
+  decimals: number;
+  chainId: number;
   rpcUrl: string;
   explorerUrl: string;
-  decimals: number;
-  supported: boolean;
+  testnet?: {
+    chainId: number;
+    rpcUrl: string;
+    explorerUrl: string;
+  };
 }
 
-export const BLOCKCHAIN_CONFIGS: Record<SupportedBlockchain, BlockchainConfig> = {
-  ethereum: {
-    id: 'ethereum',
-    name: 'Ethereum',
-    symbol: 'ETH',
-    icon: '⟠',
-    chainId: 1,
-    rpcUrl: 'https://eth-mainnet.g.alchemy.com/v2/',
-    explorerUrl: 'https://etherscan.io',
+export const blockchainConfigs: Record<SupportedBlockchain, BlockchainConfig> = {
+  bsc: {
+    id: 'bsc',
+    name: 'BSC',
+    symbol: 'BNB',
     decimals: 18,
-    supported: true
+    chainId: 56,
+    rpcUrl: 'https://bsc-dataseed1.binance.org/',
+    explorerUrl: 'https://bscscan.com',
+    testnet: {
+      chainId: 97,
+      rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      explorerUrl: 'https://testnet.bscscan.com'
+    }
   },
   solana: {
     id: 'solana',
     name: 'Solana',
     symbol: 'SOL',
-    icon: '◎',
-    rpcUrl: 'https://api.mainnet-beta.solana.com',
-    explorerUrl: 'https://solscan.io',
     decimals: 9,
-    supported: false // Future support
+    chainId: 101,
+    rpcUrl: 'https://api.mainnet-beta.solana.com',
+    explorerUrl: 'https://explorer.solana.com',
+    testnet: {
+      chainId: 103,
+      rpcUrl: 'https://api.devnet.solana.com',
+      explorerUrl: 'https://explorer.solana.com?cluster=devnet'
+    }
   },
   sui: {
     id: 'sui',
     name: 'Sui',
     symbol: 'SUI',
-    icon: '⟐',
-    rpcUrl: 'https://fullnode.mainnet.sui.io',
-    explorerUrl: 'https://suiexplorer.com',
     decimals: 9,
-    supported: false // Future support
+    chainId: 1,
+    rpcUrl: 'https://fullnode.mainnet.sui.io:443',
+    explorerUrl: 'https://explorer.sui.io',
+    testnet: {
+      chainId: 2,
+      rpcUrl: 'https://fullnode.testnet.sui.io:443',
+      explorerUrl: 'https://explorer.sui.io/?network=testnet'
+    }
   }
 };
 
-interface BlockchainState {
-  current: SupportedBlockchain;
-  configs: typeof BLOCKCHAIN_CONFIGS;
-}
-
 function createBlockchainStore() {
-  const { subscribe, set, update } = writable<BlockchainState>({
-    current: 'ethereum',
-    configs: BLOCKCHAIN_CONFIGS
+  const { subscribe, set, update } = writable({
+    current: 'bsc' as SupportedBlockchain,
+    config: blockchainConfigs.bsc,
+    isTestnet: false
   });
 
   return {
     subscribe,
-    setBlockchain: (blockchain: SupportedBlockchain) => {
-      if (BLOCKCHAIN_CONFIGS[blockchain].supported) {
-        update(state => ({ ...state, current: blockchain }));
-      }
+    switchBlockchain: (blockchain: SupportedBlockchain) => {
+      update(state => ({
+        ...state,
+        current: blockchain,
+        config: blockchainConfigs[blockchain]
+      }));
     },
-    getCurrentConfig: () => {
-      let config: BlockchainConfig;
-      subscribe(state => {
-        config = state.configs[state.current];
-      })();
-      return config!;
-    }
+    toggleTestnet: () => {
+      update(state => ({
+        ...state,
+        isTestnet: !state.isTestnet
+      }));
+    },
+    reset: () => set({
+      current: 'bsc',
+      config: blockchainConfigs.bsc,
+      isTestnet: false
+    })
   };
 }
 
 export const blockchain = createBlockchainStore();
-
-export const currentBlockchain = derived(
-  blockchain,
-  $blockchain => $blockchain.configs[$blockchain.current]
-);
-
-export const supportedBlockchains = derived(
-  blockchain,
-  $blockchain => Object.values($blockchain.configs).filter(b => b.supported)
-);

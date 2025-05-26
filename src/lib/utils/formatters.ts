@@ -79,7 +79,7 @@ export function parseNumericInput(value: string): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-// Validate ethereum address
+// Validate BSC address
 export function isValidAddress(address: string): boolean {
   return /^0x[a-fA-F0-9]{40}$/.test(address);
 }

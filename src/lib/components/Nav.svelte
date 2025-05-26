@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { currentBlockchain } from '$lib/stores/blockchain';
+  import { blockchain } from '$lib/stores/blockchain';
   import AuthButton from './AuthButton.svelte';
   import { TrendingUp, LayoutGrid, Activity } from 'lucide-svelte';
 
@@ -42,8 +42,7 @@
 
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2 px-3 py-1.5 glass rounded-lg">
-          <span class="text-2xl">{$currentBlockchain.icon}</span>
-          <span class="text-sm font-medium">{$currentBlockchain.name}</span>
+          <span class="text-sm font-medium">{$blockchain.config.name}</span>
         </div>
         
         <AuthButton />

@@ -1,137 +1,163 @@
 <script lang="ts">
   import { isAuthenticated } from '$lib/stores/auth';
-  import { currentBlockchain } from '$lib/stores/blockchain';
+  import { blockchain } from '$lib/stores/blockchain';
   import { positions } from '$lib/stores/positions';
-  import { openLongPosition } from '$lib/services/trading';
-  import LeverageSlider from './LeverageSlider.svelte';
-  import { TrendingUp, AlertCircle, Loader2 } from 'lucide-svelte';
+  import { Zap, TrendingUp } from 'lucide-svelte';
   
-  let amount = '';
+  export let selectedMarket = 'BNB-BNB-PERP';
+
+  let collateral = 0.1;
   let leverage = 10;
-  let loading = false;
-  let error = '';
-  
-  $: collateral = Number(amount) || 0;
+  let isOpening = false;
+
+  // Mock price data for different tokens
+  const mockPrices: Record<string, number> = {
+    'BNB-BNB-PERP': 542.18,
+    'WBNB-BNB-PERP': 542.18,
+    'USDT-BNB-PERP': 1.0001,
+    'USDC-BNB-PERP': 0.9999,
+    'BUSD-BNB-PERP': 1.0002,
+    'CAKE-BNB-PERP': 2.45,
+    'BTC-BNB-PERP': 43250.75,
+    'ETH-BNB-PERP': 2650.40,
+    'SOL-BNB-PERP': 98.45,
+    'ADA-BNB-PERP': 0.4521,
+    'DOT-BNB-PERP': 6.78,
+    'MATIC-BNB-PERP': 0.8234,
+    'AVAX-BNB-PERP': 35.67
+  };
+
+  // Extract token symbol from market (e.g., 'BNB-BNB-PERP' -> 'BNB')
+  $: tokenSymbol = selectedMarket.split('-')[0];
+  $: currentPrice = mockPrices[selectedMarket] || mockPrices['BNB-BNB-PERP'];
   $: positionSize = collateral * leverage;
-  $: liquidationPrice = calculateLiquidationPrice();
+  $: liquidationPrice = currentPrice * (1 - 1/leverage * 0.9); // Simplified calculation
   
-  function calculateLiquidationPrice() {
-    // Simplified calculation for demo
-    const maintenanceMargin = 0.005; // 0.5%
-    return 100 * (1 - (1 - maintenanceMargin) / leverage);
-  }
-  
-  async function handleOpenPosition() {
+  async function openPosition() {
     if (!$isAuthenticated) {
-      error = 'Please connect your wallet first';
+      alert('Please connect your wallet first');
       return;
     }
     
-    if (!amount || Number(amount) <= 0) {
-      error = 'Please enter a valid amount';
+    if (collateral <= 0) {
+      alert('Please enter a valid collateral amount');
       return;
     }
     
-    loading = true;
-    error = '';
+    isOpening = true;
     
     try {
-      const position = await openLongPosition({
-        blockchain: $currentBlockchain.id,
-        asset: $currentBlockchain.symbol,
-        collateral: Number(amount),
-        leverage
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const position = {
+        id: Date.now().toString(),
+        type: 'long' as const,
+        asset: selectedMarket,
+        collateral,
+        leverage,
+        size: positionSize,
+        entryPrice: currentPrice,
+        currentPrice: currentPrice,
+        liquidationPrice,
+        pnl: 0,
+        pnlPercentage: 0,
+        timestamp: Date.now(),
+        blockchain: $blockchain.current,
+        status: 'open' as const,
+      };
       
       positions.addPosition(position);
       
       // Reset form
-      amount = '';
+      collateral = 0.1;
       leverage = 10;
-    } catch (e) {
-      error = e instanceof Error ? e.message : 'Failed to open position';
+      
+      alert('Position opened successfully!');
+    } catch (error) {
+      console.error('Failed to open position:', error);
+      alert('Failed to open position. Please try again.');
     } finally {
-      loading = false;
+      isOpening = false;
     }
   }
 </script>
 
-<div class="card max-w-md mx-auto animate-slide-up">
-  <div class="flex items-center gap-3 mb-6">
-    <div class="p-3 bg-green-500/20 rounded-lg">
-      <TrendingUp class="w-6 h-6 text-green-400" />
-    </div>
-    <div>
-      <h2 class="text-xl font-semibold">Long Position</h2>
-      <p class="text-sm text-gray-400">Profit from price increases</p>
-    </div>
-  </div>
+<div class="card">
+  <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+    <TrendingUp class="w-5 h-5 text-purple-400" />
+    Open Long Position
+  </h2>
   
   <div class="space-y-6">
     <div>
-      <label for="amount" class="block text-sm font-medium text-gray-400 mb-2">
-        Collateral ({$currentBlockchain.symbol})
+      <label for="collateral-input" class="block text-sm font-medium text-gray-300 mb-2">
+        Collateral ({tokenSymbol})
       </label>
       <input
-        id="amount"
+        id="collateral-input"
         type="number"
-        bind:value={amount}
-        placeholder="0.0"
-        step="0.01"
-        min="0"
-        class="input-field font-mono text-lg"
-        disabled={loading}
+        bind:value={collateral}
+        min="0.001"
+        step="0.001"
+        class="input"
+        placeholder="0.1"
       />
     </div>
     
-    <LeverageSlider bind:value={leverage} max={100} />
+    <div>
+      <label for="leverage-input" class="block text-sm font-medium text-gray-300 mb-2">
+        Leverage: {leverage}x
+      </label>
+      <input
+        id="leverage-input"
+        type="range"
+        bind:value={leverage}
+        min="1"
+        max="100"
+        class="slider"
+      />
+      <div class="flex justify-between text-xs text-gray-500 mt-1">
+        <span>1x</span>
+        <span>100x</span>
+      </div>
+    </div>
     
     <div class="space-y-3 p-4 bg-white/5 rounded-lg">
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Position Size</span>
-        <span class="font-mono font-medium">
-          {positionSize.toFixed(4)} {$currentBlockchain.symbol}
-        </span>
+        <span class="font-mono">{positionSize.toFixed(4)} {tokenSymbol}</span>
       </div>
-      
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-400">Entry Price</span>
+        <span class="font-mono">${currentPrice.toFixed(4)}</span>
+      </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Liquidation Price</span>
-        <span class="font-mono font-medium text-orange-400">
-          ~{liquidationPrice.toFixed(2)}% below entry
-        </span>
+        <span class="font-mono text-red-400">${liquidationPrice.toFixed(4)}</span>
       </div>
-      
       <div class="flex justify-between text-sm">
-        <span class="text-gray-400">Max Loss</span>
-        <span class="font-mono font-medium text-red-400">
-          -{collateral.toFixed(4)} {$currentBlockchain.symbol}
-        </span>
+        <span class="text-gray-400">Est. Fees</span>
+        <span class="font-mono">-{(collateral * 0.001).toFixed(4)} {tokenSymbol}</span>
       </div>
     </div>
     
-    {#if error}
-      <div class="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-        <AlertCircle class="w-4 h-4 text-red-400 flex-shrink-0" />
-        <p class="text-sm text-red-400">{error}</p>
-      </div>
-    {/if}
-    
     <button
-      on:click={handleOpenPosition}
-      disabled={loading || !$isAuthenticated}
-      class="w-full btn-primary flex items-center justify-center gap-2"
+      class="btn-primary w-full"
+      on:click={openPosition}
+      disabled={!$isAuthenticated || isOpening || collateral <= 0}
     >
-      {#if loading}
-        <Loader2 class="w-4 h-4 animate-spin" />
-        <span>Opening Position...</span>
+      {#if isOpening}
+        <Zap class="w-4 h-4 animate-pulse" />
+        Opening Position...
       {:else}
         <TrendingUp class="w-4 h-4" />
-        <span>Open Long Position</span>
+        Open Long Position
       {/if}
     </button>
     
     {#if !$isAuthenticated}
-      <p class="text-center text-sm text-gray-400">
+      <p class="text-sm text-gray-400 text-center">
         Connect your wallet to start trading
       </p>
     {/if}

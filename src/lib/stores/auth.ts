@@ -1,30 +1,25 @@
 import { writable, derived } from 'svelte/store';
-import type { DynamicUserProfile } from '../services/dynamic';
+import type { WalletProfile } from '../services/wallet';
 
-export interface AuthState {
-  isAuthenticated: boolean;
-  user: DynamicUserProfile | null;
+interface AuthState {
+  user: WalletProfile | null;
   loading: boolean;
   error: string | null;
 }
 
-function createAuthStore() {
-  const { subscribe, set, update } = writable<AuthState>({
-    isAuthenticated: false,
+const initialState: AuthState = {
     user: null,
     loading: false,
     error: null
-  });
+};
+
+function createAuthStore() {
+  const { subscribe, set, update } = writable<AuthState>(initialState);
 
   return {
     subscribe,
-    setUser: (user: DynamicUserProfile | null) => {
-      update(state => ({
-        ...state,
-        user,
-        isAuthenticated: !!user,
-        error: null
-      }));
+    setUser: (user: WalletProfile | null) => {
+      update(state => ({ ...state, user, error: null }));
     },
     setLoading: (loading: boolean) => {
       update(state => ({ ...state, loading }));
@@ -33,12 +28,7 @@ function createAuthStore() {
       update(state => ({ ...state, error }));
     },
     logout: () => {
-      set({
-        isAuthenticated: false,
-        user: null,
-        loading: false,
-        error: null
-      });
+      set(initialState);
     }
   };
 }
@@ -47,10 +37,10 @@ export const auth = createAuthStore();
 
 export const isAuthenticated = derived(
   auth,
-  $auth => $auth.isAuthenticated
+  $auth => $auth.user !== null
 );
 
-export const currentUser = derived(
+export const user = derived(
   auth,
   $auth => $auth.user
 );
@@ -58,4 +48,9 @@ export const currentUser = derived(
 export const walletAddress = derived(
   auth,
   $auth => $auth.user?.walletAddress || null
+);
+
+export const walletBalance = derived(
+  auth,
+  $auth => $auth.user?.balance || '0'
 );

@@ -1,19 +1,19 @@
 // Blockchain configurations
 export const CHAIN_IDS = {
-  ETHEREUM: 1,
-  POLYGON: 137,
-  ARBITRUM: 42161,
-  OPTIMISM: 10,
   BSC: 56,
-} as const;
-
-export const CHAIN_NAMES: Record<number, string> = {
-  [CHAIN_IDS.ETHEREUM]: 'Ethereum',
-  [CHAIN_IDS.POLYGON]: 'Polygon',
-  [CHAIN_IDS.ARBITRUM]: 'Arbitrum',
-  [CHAIN_IDS.OPTIMISM]: 'Optimism',
-  [CHAIN_IDS.BSC]: 'BSC',
+  BSC_TESTNET: 97,
+  SOLANA: 101,
+  SUI: 1
 };
+
+export const CHAIN_NAMES = {
+  [CHAIN_IDS.BSC]: 'BSC',
+  [CHAIN_IDS.BSC_TESTNET]: 'BSC Testnet',
+  [CHAIN_IDS.SOLANA]: 'Solana',
+  [CHAIN_IDS.SUI]: 'Sui'
+};
+
+export const DEFAULT_CHAIN_ID = CHAIN_IDS.BSC;
 
 // Trading constants
 export const TRADING_CONSTANTS = {

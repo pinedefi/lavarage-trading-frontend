@@ -1,8 +1,17 @@
 <script lang="ts">
   import { isAuthenticated } from '$lib/stores/auth';
   import { openPositions, totalPnL, totalCollateral } from '$lib/stores/positions';
-  import { currentBlockchain } from '$lib/stores/blockchain';
+  import { blockchain } from '$lib/stores/blockchain';
   import { TrendingUp, DollarSign, Activity, Zap } from 'lucide-svelte';
+  
+  // Define proper types for stats
+  interface Stat {
+    label: string;
+    value: any;
+    icon: any;
+    color: string;
+    format: (v: any) => string;
+  }
   
   // Declare store values at top level
   $: stats = [
@@ -11,23 +20,23 @@
       value: $totalCollateral,
       icon: DollarSign,
       color: 'purple',
-      format: (v: number) => `${v.toFixed(4)} ${$currentBlockchain.symbol}`
+      format: (v: number) => `${v.toFixed(4)} ${$blockchain.config.symbol}`
     },
     {
       label: 'Open Positions',
       value: $openPositions,
       icon: Activity,
       color: 'orange',
-      format: (v: any) => v.length.toString()
+      format: (v: any[]) => v.length.toString()
     },
     {
       label: 'Total PnL',
       value: $totalPnL,
       icon: TrendingUp,
       color: 'green',
-      format: (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(4)} ${$currentBlockchain.symbol}`
+      format: (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(4)} ${$blockchain.config.symbol}`
     }
-  ];
+  ] as Stat[];
 </script>
 
 <div class="max-w-6xl mx-auto space-y-8">
