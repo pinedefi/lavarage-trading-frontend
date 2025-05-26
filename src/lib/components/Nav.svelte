@@ -18,10 +18,10 @@
         <a href="/" class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-lg gradient-border flex items-center justify-center">
             <span class="text-xl font-bold bg-gradient-to-r from-red-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-              T
+              🌋
             </span>
           </div>
-          <span class="text-xl font-semibold">TradeFi</span>
+          <span class="text-xl font-semibold">Lavarage</span>
         </a>
 
         <div class="flex items-center gap-1">

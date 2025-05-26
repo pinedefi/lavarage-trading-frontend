@@ -90,11 +90,18 @@ export async function getMultipleTokenPrices(symbols: SupportedToken[]): Promise
 // Format price for display
 export function formatPrice(price: number): string {
   if (price >= 1000) {
-    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   } else if (price >= 1) {
-    return `$${price.toFixed(4)}`;
+    return `${price.toFixed(4)}`;
+  } else if (price >= 0.000001) {
+    return `${price.toFixed(6)}`;
   } else {
-    return `$${price.toFixed(6)}`;
+    // Count leading zeros after decimal point
+    const leadingZeros = Math.abs(Math.floor(Math.log10(price))) - 1;
+    const significantDigits = price * Math.pow(10, leadingZeros + 1);
+    // Convert number to subscript
+    const subscript = leadingZeros.toString().split('').map(d => '₀₁₂₃₄₅₆₇₈₉'[parseInt(d)]).join('');
+    return `0.0${subscript}${significantDigits.toFixed(4)}`;
   }
 }
 

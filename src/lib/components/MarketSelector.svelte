@@ -1,50 +1,30 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { Search, Star, TrendingUp, TrendingDown, Loader2 } from 'lucide-svelte';
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
-  import { getMarketData, getMockMarketData, type MarketData } from '$lib/services/offers';
+  import { markets, selectedMarket, loading } from '$lib/stores/markets';
+  import type { MarketData } from '$lib/services/offers';
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    select: MarketData;
+  }>();
 
   export let isOpen = false;
-  export let selectedMarket = 'BNB-BNB-PERP';
 
   let searchQuery = '';
   let selectedCategory = 'all';
   let sortBy = 'volume';
   let sortDirection = 'desc';
-  let markets: MarketData[] = [];
-  let loading = true;
 
   const categories = [
     { id: 'all', label: 'All' },
     { id: 'favorites', label: 'Favorites' },
-    { id: 'perpetual', label: 'Perpetual' },
+    { id: 'margin', label: 'Margin' },
     { id: 'futures', label: 'Futures' },
     { id: 'options', label: 'Options' }
   ];
 
-  onMount(async () => {
-    await loadMarkets();
-  });
-
-  async function loadMarkets() {
-    loading = true;
-    try {
-      markets = await getMarketData();
-      if (markets.length === 0) {
-        // Fallback to mock data if API fails
-        markets = getMockMarketData();
-      }
-    } catch (error) {
-      console.error('Failed to load markets:', error);
-      markets = getMockMarketData();
-    } finally {
-      loading = false;
-    }
-  }
-
-  $: filteredMarkets = markets
+  $: filteredMarkets = $markets
     .filter(market => {
       // Filter by search query
       if (searchQuery) {
@@ -70,8 +50,8 @@
             ? a.symbol.localeCompare(b.symbol)
             : b.symbol.localeCompare(a.symbol);
         case 'price':
-          aValue = a.price;
-          bValue = b.price;
+          aValue = Number(a.priceVsQuote);
+          bValue = Number(b.priceVsQuote);
           break;
         case 'change':
           aValue = a.change24h;
@@ -88,14 +68,13 @@
     });
 
   function selectMarket(market: MarketData) {
-    selectedMarket = market.symbol;
     dispatch('select', market);
     isOpen = false;
   }
 
   function toggleFavorite(market: MarketData) {
     market.isFavorite = !market.isFavorite;
-    markets = [...markets]; // Trigger reactivity
+    markets.set($markets); // Trigger reactivity
   }
 
   function setSortBy(field: string) {
@@ -191,7 +170,7 @@
 
         <!-- Market List -->
         <div class="market-list">
-          {#if loading}
+          {#if $loading}
             <div class="loading-container">
               <Loader2 class="loading-spinner" size={24} />
               <p>Loading markets...</p>
@@ -199,16 +178,13 @@
           {:else if filteredMarkets.length === 0}
             <div class="empty-state">
               <p>No markets found</p>
-              <button class="retry-button" on:click={loadMarkets}>
-                Retry
-              </button>
             </div>
           {:else}
             {#each filteredMarkets as market}
               {@const priceChangeFormatted = formatPriceChange(market.change24h)}
               <div
                 class="market-row"
-                class:selected={market.symbol === selectedMarket}
+                class:selected={market.symbol === $selectedMarket}
                 on:click={() => selectMarket(market)}
                 on:keydown={(e) => e.key === 'Enter' && selectMarket(market)}
                 role="button"
@@ -231,7 +207,7 @@
                 </div>
 
                 <div class="market-price">
-                  <div class="price">{formatPrice(market.price)}</div>
+                  <div class="price">{formatPrice(Number(market.priceVsQuote))}</div>
                 </div>
 
                 <div class="market-change">
@@ -326,24 +302,28 @@
     position: relative;
     margin: 1.5rem;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
   }
 
   .search-icon {
     position: absolute;
-    left: 0.75rem;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
     color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
   }
 
   .search-input {
     width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    padding: 0.75rem 0.75rem 0.75rem 2.75rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
     color: white;
     font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   .search-input:focus {

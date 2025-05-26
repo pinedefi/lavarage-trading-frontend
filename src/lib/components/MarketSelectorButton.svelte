@@ -1,62 +1,29 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { ChevronDown, TrendingUp, TrendingDown } from 'lucide-svelte';
   import { formatPrice, formatPriceChange } from '$lib/services/birdeye';
-  import { getMarketData, getMockMarketData, type MarketData } from '$lib/services/offers';
+  import { markets, selectedMarket, currentMarket } from '$lib/stores/markets';
+  import type { MarketData } from '$lib/services/offers';
   import MarketSelector from './MarketSelector.svelte';
 
-  export let selectedMarket = 'BNB-BNB-PERP';
-  export let currentPrice = 542.18;
-  export let priceChange24h = 2.45;
+  export let currentPrice = 0;
+  export let priceChange24h = 0;
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    marketChange: MarketData;
+  }>();
+  
   let showMarketSelector = false;
-  let markets: MarketData[] = [];
 
-  onMount(async () => {
-    await loadMarkets();
-  });
-
-  async function loadMarkets() {
-    try {
-      markets = await getMarketData();
-      if (markets.length === 0) {
-        markets = getMockMarketData();
-      }
-    } catch (error) {
-      console.error('Failed to load markets:', error);
-      markets = getMockMarketData();
-    }
-  }
-
-  $: currentMarket = markets.find(m => m.symbol === selectedMarket) || markets[0] || {
-    symbol: selectedMarket,
-    name: 'Unknown Perpetual',
-    price: currentPrice,
-    change24h: priceChange24h,
-    volume24h: 0,
-    category: 'perpetual',
-    isFavorite: false,
-    isActive: true,
-    maxLeverage: 10,
-    apr: 0,
-    availableForOpen: '0',
-    quoteToken: 'BNB'
-  };
-
-  $: priceChangeFormatted = formatPriceChange(currentMarket.change24h);
+  $: priceChangeFormatted = formatPriceChange($currentMarket?.change24h || 0);
 
   function openMarketSelector() {
     showMarketSelector = true;
   }
 
-  function handleMarketSelect(event: CustomEvent) {
+  function handleMarketSelect(event: CustomEvent<MarketData>) {
     const market = event.detail;
-    selectedMarket = market.symbol;
-    currentPrice = market.price;
-    priceChange24h = market.change24h;
-    
-    // Dispatch event to parent component using Svelte's event dispatcher
+    selectedMarket.set(market.symbol);
     dispatch('marketChange', market);
   }
 </script>
@@ -64,14 +31,14 @@
 <div class="market-selector-container">
   <button class="market-selector-button" on:click={openMarketSelector}>
     <div class="market-info">
-      <div class="market-symbol">{selectedMarket}</div>
-      <div class="market-name">{currentMarket.name}</div>
+      <div class="market-symbol">{$selectedMarket}</div>
+      <div class="market-name">{$currentMarket?.name || 'Unknown Market'}</div>
     </div>
     
     <div class="market-price-info">
-      <div class="market-price">{formatPrice(currentMarket.price)}</div>
-      <div class="market-change" class:positive={currentMarket.change24h >= 0} class:negative={currentMarket.change24h < 0}>
-        {#if currentMarket.change24h >= 0}
+      <div class="market-price">{formatPrice(Number($currentMarket?.priceVsQuote || 0))}</div>
+      <div class="market-change" class:positive={($currentMarket?.change24h || 0) >= 0} class:negative={($currentMarket?.change24h || 0) < 0}>
+        {#if ($currentMarket?.change24h || 0) >= 0}
           <TrendingUp size={12} />
         {:else}
           <TrendingDown size={12} />
@@ -85,7 +52,7 @@
 
   <MarketSelector 
     bind:isOpen={showMarketSelector}
-    bind:selectedMarket
+    selectedMarket={$selectedMarket}
     on:select={handleMarketSelect}
   />
 </div>

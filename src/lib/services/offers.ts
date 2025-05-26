@@ -6,6 +6,8 @@ export interface TokenModel {
   symbol: string;
   logoURI?: string;
   decimals: number;
+  change24h: number;
+  volume24h: string;
 }
 
 export interface OfferAccount {
@@ -32,6 +34,7 @@ export interface OfferEvmModel {
   tags: string[];
   active: boolean;
   account: OfferAccount;
+  priceVsQuote: string;
 }
 
 export interface MarketData {
@@ -48,6 +51,7 @@ export interface MarketData {
   availableForOpen: string;
   collateralToken?: TokenModel;
   quoteToken: TokenModel | string;
+  priceVsQuote: string;
 }
 
 const API_BASE_URL = 'http://localhost:3000';
@@ -86,12 +90,12 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
     : offer.quoteToken.symbol;
 
   const symbol = collateralToken 
-    ? `${collateralToken.symbol}-${quoteTokenSymbol}-PERP`
+    ? `${offer.collateralToken?.symbol}-${quoteTokenSymbol}`
     : 'UNKNOWN-PERP';
 
   const name = collateralToken 
-    ? `${collateralToken.name} Perpetual`
-    : 'Unknown Perpetual';
+    ? `${collateralToken.name}`
+    : 'Unknown Margin';
 
   // Mock price data - in a real app, you'd fetch this from a price API
   const mockPrices: Record<string, { price: number; change24h: number; volume: number }> = {
@@ -115,10 +119,10 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
   return {
     symbol,
     name,
-    price: priceData.price,
-    change24h: priceData.change24h,
-    volume24h: priceData.volume,
-    category: 'perpetual',
+    price: Number(offer.priceVsQuote),
+    change24h: offer.collateralToken?.change24h || 0,
+    volume24h: Number(offer.collateralToken?.volume24h) || 0,
+    category: 'margin',
     isFavorite: false,
     isActive: offer.active,
     maxLeverage: offer.maxLeverage,
@@ -126,6 +130,7 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
     availableForOpen: offer.availableForOpen,
     collateralToken: offer.collateralToken,
     quoteToken: offer.quoteToken,
+    priceVsQuote: offer.priceVsQuote,
   };
 }
 
@@ -144,59 +149,63 @@ export function getMockMarketData(): MarketData[] {
   return [
     {
       symbol: 'BNB-BNB-PERP',
-      name: 'BNB Perpetual',
+      name: 'BNB Margin',
       price: 542.18,
       change24h: 2.45,
       volume24h: 24800000000,
-      category: 'perpetual',
+      category: 'margin',
       isFavorite: true,
       isActive: true,
       maxLeverage: 10,
       apr: 12.5,
       availableForOpen: '1000000000000',
       quoteToken: 'BNB',
+      priceVsQuote: '1.0000',
     },
     {
       symbol: 'USDT-BNB-PERP',
-      name: 'USDT Perpetual',
+      name: 'USDT Margin',
       price: 1.0001,
       change24h: 0.01,
       volume24h: 45000000000,
-      category: 'perpetual',
+      category: 'margin',
       isFavorite: false,
       isActive: true,
       maxLeverage: 20,
       apr: 8.2,
       availableForOpen: '2000000000000',
       quoteToken: 'BNB',
+      priceVsQuote: '1.0001',
     },
     {
       symbol: 'USDC-BNB-PERP',
-      name: 'USDC Perpetual',
+      name: 'USDC Margin',
       price: 0.9999,
       change24h: -0.01,
       volume24h: 38000000000,
-      category: 'perpetual',
+      category: 'margin',
       isFavorite: false,
       isActive: true,
       maxLeverage: 20,
       apr: 7.8,
       availableForOpen: '1800000000000',
       quoteToken: 'BNB',
+      priceVsQuote: '0.9999',
     },
     {
       symbol: 'CAKE-BNB-PERP',
-      name: 'PancakeSwap Perpetual',
+      name: 'PancakeSwap Margin',
       price: 2.45,
       change24h: 3.21,
       volume24h: 890000000,
-      category: 'perpetual',
+      category: 'margin',
       isFavorite: false,
       isActive: true,
       maxLeverage: 15,
       apr: 15.3,
       availableForOpen: '500000000000',
       quoteToken: 'BNB',
+      priceVsQuote: '1.0000',
     },
   ];
 } 

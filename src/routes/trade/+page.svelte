@@ -6,7 +6,7 @@
   import { openPositions } from '$lib/stores/positions';
   import { blockchain } from '$lib/stores/blockchain';
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
-  import { getMarketData, getMockMarketData, type MarketData } from '$lib/services/offers';
+  import { markets, selectedMarket, currentMarket, loading, startUpdates, stopUpdates } from '$lib/stores/markets';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { Info, Shield, TrendingUp } from 'lucide-svelte';
@@ -14,107 +14,33 @@
   let currentPrice = 0;
   let priceChange24h = 0;
   let volume24h = 0;
-  let loading = true;
-  let priceUpdateInterval: NodeJS.Timeout;
-  let selectedMarket = 'BNB-BNB-PERP';
-  let markets: MarketData[] = [];
 
-  // Mock price data for different tokens
-  const mockPriceData: Record<string, { basePrice: number; volume: number }> = {
-    'BNB': { basePrice: 542.18, volume: 24800000000 },
-    'WBNB': { basePrice: 542.18, volume: 24800000000 },
-    'BTC': { basePrice: 43250.75, volume: 120000000000 },
-    'ETH': { basePrice: 2650.40, volume: 89000000000 },
-    'SOL': { basePrice: 98.45, volume: 15600000000 },
-    'ADA': { basePrice: 0.4521, volume: 890000000 },
-    'DOT': { basePrice: 6.78, volume: 234000000 },
-    'MATIC': { basePrice: 0.8234, volume: 670000000 },
-    'AVAX': { basePrice: 35.67, volume: 890000000 },
-    'USDT': { basePrice: 1.0001, volume: 45000000000 },
-    'USDC': { basePrice: 0.9999, volume: 38000000000 },
-    'BUSD': { basePrice: 1.0002, volume: 12000000000 },
-    'CAKE': { basePrice: 2.45, volume: 890000000 }
-  };
-
-  // Map market symbols to token symbols for price data
-  function getTokenFromMarket(market: string): string {
-    // Extract the first part before the first hyphen (collateral token)
-    return market.split('-')[0];
-  }
-
-  function generateMockPrice(symbol: string): { price: number; change24h: number; volume: number } {
-    const mockData = mockPriceData[symbol] || mockPriceData['BNB'];
-    
-    // Generate realistic price fluctuation (±5%)
-    const fluctuation = (Math.random() - 0.5) * 0.1; // ±5%
-    const price = mockData.basePrice * (1 + fluctuation);
-    
-    // Generate realistic 24h change (±15%)
-    const change24h = (Math.random() - 0.5) * 30; // ±15%
-    
-    // Add some volume variation (±20%)
-    const volumeVariation = (Math.random() - 0.5) * 0.4; // ±20%
-    const volume = mockData.volume * (1 + volumeVariation);
-    
-    return { price, change24h, volume };
-  }
-
-  function updatePriceData() {
-    try {
-      const token = getTokenFromMarket(selectedMarket);
-      const mockData = generateMockPrice(token);
-      currentPrice = mockData.price;
-      priceChange24h = mockData.change24h;
-      volume24h = mockData.volume;
-    } catch (error) {
-      console.error('Failed to update price data:', error);
-    } finally {
-      loading = false;
-    }
+  // Subscribe to currentMarket store to update local values
+  $: if ($currentMarket) {
+    currentPrice = Number($currentMarket.priceVsQuote);
+    priceChange24h = $currentMarket.change24h;
+    volume24h = $currentMarket.volume24h;
   }
 
   function handleMarketChange(event: CustomEvent) {
     const market = event.detail;
-    selectedMarket = market.symbol;
-    updatePriceData();
+    selectedMarket.set(market.symbol);
   }
 
-  async function loadMarkets() {
-    try {
-      markets = await getMarketData();
-      if (markets.length === 0) {
-        markets = getMockMarketData();
-      }
-      // Set the first available market as default if current selection is not found
-      if (markets.length > 0 && !markets.find(m => m.symbol === selectedMarket)) {
-        selectedMarket = markets[0].symbol;
-      }
-    } catch (error) {
-      console.error('Failed to load markets:', error);
-      markets = getMockMarketData();
-      if (markets.length > 0) {
-        selectedMarket = markets[0].symbol;
-      }
-    }
-  }
-
-  onMount(async () => {
+  onMount(() => {
     if (browser) {
-      await loadMarkets();
-      updatePriceData();
-      // Update price every 5 seconds for demo
-      priceUpdateInterval = setInterval(updatePriceData, 5000);
+      startUpdates();
     }
   });
 
   onDestroy(() => {
-    if (browser && priceUpdateInterval) {
-      clearInterval(priceUpdateInterval);
+    if (browser) {
+      stopUpdates();
     }
   });
 
   $: priceChangeFormatted = formatPriceChange(priceChange24h);
-  $: currentToken = getTokenFromMarket(selectedMarket);
+  $: currentToken = $selectedMarket.split('-')[0];
 </script>
 
 <div class="max-w-6xl mx-auto">
@@ -123,9 +49,8 @@
       <div class="card">
         <div class="trade-header">
           <MarketSelectorButton 
-            bind:selectedMarket
-            bind:currentPrice
-            bind:priceChange24h
+            currentPrice={currentPrice}
+            priceChange24h={priceChange24h}
             on:marketChange={handleMarketChange}
           />
         </div>
@@ -133,7 +58,7 @@
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="p-4 bg-white/5 rounded-lg">
             <p class="text-sm text-gray-400 mb-1">Current Price</p>
-            {#if loading}
+            {#if $loading}
               <div class="animate-pulse">
                 <div class="h-6 bg-gray-600 rounded w-24 mb-1"></div>
                 <div class="h-4 bg-gray-600 rounded w-16"></div>
@@ -146,7 +71,7 @@
           
           <div class="p-4 bg-white/5 rounded-lg">
             <p class="text-sm text-gray-400 mb-1">24h Volume</p>
-            {#if loading}
+            {#if $loading}
               <div class="animate-pulse">
                 <div class="h-6 bg-gray-600 rounded w-20 mb-1"></div>
                 <div class="h-4 bg-gray-600 rounded w-24"></div>
@@ -202,7 +127,7 @@
     </div>
     
     <div class="space-y-6">
-      <TradingPanel {selectedMarket} />
+      <TradingPanel />
       
       <div class="card space-y-3">
         <h3 class="text-sm font-semibold text-gray-400 flex items-center gap-2">
