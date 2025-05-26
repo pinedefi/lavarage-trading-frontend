@@ -2,6 +2,7 @@
   import TradingPanel from '$lib/components/TradingPanel.svelte';
   import BirdeyeChart from '$lib/components/BirdeyeChart.svelte';
   import MarketSelectorButton from '$lib/components/MarketSelectorButton.svelte';
+  import PositionsTable from '$lib/components/PositionsTable.svelte';
   import { isAuthenticated } from '$lib/stores/auth';
   import { openPositions } from '$lib/stores/positions';
   import { blockchain } from '$lib/stores/blockchain';
@@ -124,7 +125,13 @@
     
     <div class="space-y-6">
       <TradingPanel />
-      
+
+      {#if $openPositions.length > 0}
+        <div class="card">
+          <PositionsTable />
+        </div>
+      {/if}
+
       <div class="card space-y-3">
         <h3 class="text-sm font-semibold text-gray-400 flex items-center gap-2">
           <Shield class="w-4 h-4" />
