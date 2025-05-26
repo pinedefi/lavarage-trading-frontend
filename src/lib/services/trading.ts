@@ -1,40 +1,81 @@
 import type { Position } from '$lib/stores/positions';
 import type { SupportedBlockchain } from '$lib/stores/blockchain';
+import { getCurrentAccount } from '$lib/services/wallet';
+import { config } from '$lib/config/wagmi';
+import { sendTransaction, waitForTransactionReceipt } from '@wagmi/core';
 
 export interface OpenPositionParams {
   blockchain: SupportedBlockchain;
   asset: string;
   collateral: number;
   leverage: number;
+  collateralAddress: string;
+  quoteToken: string;
+  slippage?: number;
+  partnerFeeRecipient?: string;
 }
 
-// Mock trading service
-// In production, integrate with smart contracts or trading API
-export async function openLongPosition(params: OpenPositionParams): Promise<Position> {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  const entryPrice = 3542.18; // Mock price
-  const positionSize = params.collateral * params.leverage;
-  
-  const position: Position = {
-    id: 'pos_' + Math.random().toString(36).substr(2, 9),
-    blockchain: params.blockchain,
-    asset: params.asset,
-    type: 'long',
-    entryPrice,
-    currentPrice: entryPrice,
-    size: positionSize,
+interface OpenBscPositionDto {
+  collateralAddress: string;
+  margin: string;
+  leverage: number;
+  quoteToken: string;
+  userPubKey: string;
+  slippage?: number;
+  partnerFeeRecipient?: string;
+}
+
+interface TransactionBscModel {
+  data: string;
+  to: string;
+  gasLimit?: string;
+  gasPrice?: string;
+  txHash?: string;
+}
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://ng-api.lavarave.wtf/api/sdk/v1.0';
+const API_KEY = import.meta.env.VITE_API_KEY || '';
+
+export async function openLongPosition(params: OpenPositionParams): Promise<string> {
+  const account = getCurrentAccount();
+  if (!account.address) throw new Error('Wallet not connected');
+
+  const body: OpenBscPositionDto = {
+    collateralAddress: params.collateralAddress,
+    margin: (BigInt(Math.round(params.collateral * 1000000)) * BigInt(1000000000000)).toString(),
     leverage: params.leverage,
-    collateral: params.collateral,
-    pnl: 0,
-    pnlPercentage: 0,
-    liquidationPrice: calculateLiquidationPrice(entryPrice, params.leverage),
-    timestamp: Date.now(),
-    status: 'open'
+    quoteToken: params.quoteToken,
+    userPubKey: account.address,
+    slippage: params.slippage ?? 500,
+    partnerFeeRecipient: params.partnerFeeRecipient,
   };
-  
-  return position;
+
+  const res = await fetch(`${API_URL}/positions/bsc/open`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to get transaction data');
+  }
+
+  const tx: TransactionBscModel = await res.json();
+
+  const hash = await sendTransaction(config, {
+    account: account.address,
+    to: tx.to as `0x${string}`,
+    data: tx.data as `0x${string}`,
+    gas: tx.gasLimit ? BigInt(tx.gasLimit) : undefined,
+    gasPrice: tx.gasPrice ? BigInt(tx.gasPrice) : undefined,
+  });
+
+  await waitForTransactionReceipt(config, { hash });
+
+  return hash;
 }
 
 export async function closePosition(positionId: string): Promise<void> {

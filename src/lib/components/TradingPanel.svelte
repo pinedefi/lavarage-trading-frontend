@@ -5,13 +5,47 @@
   import { Zap, TrendingUp } from 'lucide-svelte';
   import { getMarketData, type MarketData } from '$lib/services/offers';
   import { selectedMarket as selectedMarketStore } from '$lib/stores/markets';
+  import { openLongPosition } from '$lib/services/trading';
   import { onMount } from 'svelte';
+  import { formatPrice } from '$lib/services/birdeye';
+  import { switchNetwork } from '$lib/services/wallet';
+  import { getAccount } from '@wagmi/core';
+  import { config } from '$lib/config/wagmi';
+  import { bsc } from '@wagmi/core/chains';
   
   let collateral = 0.1;
   let leverage = 1.2;
   let isOpening = false;
   let markets: MarketData[] = [];
   let loading = true;
+  let switchingNetwork = false;
+
+  // Handler to format collateral input to 5 decimal places
+  function handleCollateralInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    
+    // Allow empty input and decimal point for better UX
+    if (!value || value.endsWith('.') || value.endsWith('.0') || value.endsWith('.00') || 
+        value.endsWith('.000') || value.endsWith('.0000') || value.endsWith('.00000')) {
+      collateral = parseFloat(value) || 0;
+      return;
+    }
+
+    // Only format if we have a complete number
+    const parsed = parseFloat(value);
+    if (!isNaN(parsed)) {
+      // Split the number into integer and decimal parts
+      const parts = value.split('.');
+      if (parts.length === 2 && parts[1].length > 5) {
+        // Only truncate if we have more than 5 decimal places
+        collateral = Math.round(parsed * 100000) / 100000;
+        input.value = collateral.toString();
+      } else {
+        collateral = parsed;
+      }
+    }
+  }
 
   onMount(async () => {
     await loadMarkets();
@@ -26,6 +60,24 @@
     } finally {
       loading = false;
     }
+  }
+
+  async function ensureCorrectNetwork(): Promise<boolean> {
+    const account = getAccount(config);
+    if (account.chainId !== bsc.id) {
+      try {
+        switchingNetwork = true;
+        await switchNetwork(bsc.id);
+        return true;
+      } catch (error) {
+        console.error('Failed to switch network:', error);
+        alert('Please switch to BSC network in your wallet');
+        return false;
+      } finally {
+        switchingNetwork = false;
+      }
+    }
+    return true;
   }
 
   $: currentMarket = markets.find(m => m.symbol === $selectedMarketStore) || markets[0];
@@ -45,15 +97,34 @@
       alert('Please enter a valid collateral amount');
       return;
     }
+
+    if (!currentMarket) {
+      alert('Market data not available');
+      return;
+    }
+
+    // Ensure we're on the correct network
+    if (!(await ensureCorrectNetwork())) {
+      return;
+    }
     
     isOpening = true;
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      const txHash = await openLongPosition({
+        blockchain: $blockchain.current,
+        asset: $selectedMarketStore,
+        collateral,
+        leverage,
+        collateralAddress: currentMarket?.collateralToken?.address || '',
+        quoteToken:
+          typeof currentMarket?.quoteToken === 'string'
+            ? currentMarket?.quoteToken
+            : currentMarket?.quoteToken?.address || '',
+      });
+
       const position = {
-        id: Date.now().toString(),
+        id: txHash,
         type: 'long' as const,
         asset: $selectedMarketStore,
         collateral,
@@ -68,14 +139,13 @@
         blockchain: $blockchain.current,
         status: 'open' as const,
       };
-      
+
       positions.addPosition(position);
-      
-      // Reset form
+
       collateral = 0.1;
       leverage = 10;
-      
-      alert('Position opened successfully!');
+
+      alert(`Transaction submitted: ${txHash}`);
     } catch (error) {
       console.error('Failed to open position:', error);
       alert('Failed to open position. Please try again.');
@@ -94,14 +164,15 @@
   <div class="space-y-6">
     <div>
       <label for="collateral-input" class="block text-sm font-medium text-gray-300 mb-2">
-        Collateral ({tokenSymbol})
+        Collateral (BNB)
       </label>
       <input
         id="collateral-input"
         type="number"
         bind:value={collateral}
+        on:input={handleCollateralInput}
         min="0.001"
-        step="0.001"
+        step="0.00001"
         class="input-field"
         placeholder="0.1"
       />
@@ -158,11 +229,11 @@
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Entry Price</span>
-        <span class="font-mono">${currentPrice.toFixed(4)}</span>
+        <span class="font-mono">${formatPrice(currentPrice)}</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Liquidation Price</span>
-        <span class="font-mono text-red-400">${liquidationPrice.toFixed(4)}</span>
+        <span class="font-mono text-red-400">${formatPrice(liquidationPrice)}</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Est. Fees</span>
@@ -173,11 +244,14 @@
     <button
       class="btn-primary w-full inline-flex items-center justify-center gap-2"
       on:click={openPosition}
-      disabled={!$isAuthenticated || isOpening || collateral <= 0}
+      disabled={!$isAuthenticated || isOpening || collateral <= 0 || switchingNetwork}
     >
       {#if isOpening}
         <Zap class="w-4 h-4 animate-pulse" />
         Opening Position...
+      {:else if switchingNetwork}
+        <Zap class="w-4 h-4 animate-pulse" />
+        Switching Network...
       {:else}
         <TrendingUp class="w-4 h-4" />
         Open Long Position
