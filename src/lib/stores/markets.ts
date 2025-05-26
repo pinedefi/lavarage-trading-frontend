@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { getMarketData, getMockMarketData, type MarketData } from '$lib/services/offers';
+import { getMarketData, type MarketData } from '$lib/services/offers';
 
 // Create the store with initial state
 export const markets = writable<MarketData[]>([]);
@@ -15,28 +15,26 @@ export async function loadMarkets() {
   loading.set(true);
   try {
     let marketData = await getMarketData();
-    if (marketData.length === 0) {
-      marketData = getMockMarketData();
-    }
     markets.set(marketData);
     
     // Update current market
-    selectedMarket.subscribe(symbol => {
-      const market = marketData.find(m => m.symbol === symbol) || marketData[0];
-      if (market) {
-        currentMarket.set(market);
-        if (!marketData.find(m => m.symbol === symbol)) {
-          selectedMarket.set(market.symbol);
+    if (marketData.length > 0) {
+      selectedMarket.subscribe(symbol => {
+        const market = marketData.find(m => m.symbol === symbol) || marketData[0];
+        if (market) {
+          currentMarket.set(market);
+          if (!marketData.find(m => m.symbol === symbol)) {
+            selectedMarket.set(market.symbol);
+          }
         }
-      }
-    });
+      });
+    } else {
+      currentMarket.set(null);
+    }
   } catch (error) {
     console.error('Failed to load markets:', error);
-    const mockData = getMockMarketData();
-    markets.set(mockData);
-    const market = mockData[0];
-    currentMarket.set(market);
-    selectedMarket.set(market.symbol);
+    markets.set([]);
+    currentMarket.set(null);
   } finally {
     loading.set(false);
   }

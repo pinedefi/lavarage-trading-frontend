@@ -6,8 +6,6 @@
   import type { MarketData } from '$lib/services/offers';
   import MarketSelector from './MarketSelector.svelte';
 
-  export let currentPrice = 0;
-  export let priceChange24h = 0;
 
   const dispatch = createEventDispatcher<{
     marketChange: MarketData;
@@ -50,9 +48,8 @@
     <ChevronDown size={16} class="chevron" />
   </button>
 
-  <MarketSelector 
+  <MarketSelector
     bind:isOpen={showMarketSelector}
-    selectedMarket={$selectedMarket}
     on:select={handleMarketSelect}
   />
 </div>

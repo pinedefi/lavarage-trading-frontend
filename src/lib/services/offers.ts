@@ -140,8 +140,8 @@ export async function getMarketData(): Promise<MarketData[]> {
     return offers.map(transformOfferToMarket);
   } catch (error) {
     console.error('Failed to get market data:', error);
-    // Return mock data as fallback
-    return getMockMarketData();
+    // Return empty array if network request fails
+    return [];
   }
 }
 
