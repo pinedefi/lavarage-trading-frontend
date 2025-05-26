@@ -2,23 +2,34 @@
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { blockchain } from '$lib/stores/blockchain';
+  import { currentMarket } from '$lib/stores/markets';
+  import type { TokenModel } from '$lib/services/offers';
 
-  export let symbol: string = 'BNB';
   export let height: number = 400;
   
   let chartContainer: HTMLDivElement;
   let loading = true;
   let error: string | null = null;
+  let prevBaseAddress: string | null = null;
+  let prevQuoteAddress: string | null = null;
 
-  // Birdeye token addresses for BSC
-  const tokenAddresses: Record<string, string> = {
-    'BNB': '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', // WBNB on BSC
-    'USDT': '0x55d398326f99059fF775485246999027B3197955',
-    'USDC': '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-    'BUSD': '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56'
-  };
+  // Get token addresses from current market
+  $: baseToken = $currentMarket?.collateralToken?.symbol || 'Unknown';
+  $: quoteToken = typeof $currentMarket?.quoteToken === 'string' 
+    ? 'BNB'
+    : $currentMarket?.quoteToken?.symbol || 'BNB';
+  
+  $: baseAddress = $currentMarket?.collateralToken?.address || '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+  $: quoteAddress = typeof $currentMarket?.quoteToken === 'string'
+    ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' // Default BNB address
+    : $currentMarket?.quoteToken?.address || '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 
-  $: tokenAddress = tokenAddresses[symbol] || tokenAddresses['BNB'];
+  // Only reload chart if token addresses have changed
+  $: if (browser && chartContainer && $currentMarket && (baseAddress !== prevBaseAddress || quoteAddress !== prevQuoteAddress)) {
+    prevBaseAddress = baseAddress;
+    prevQuoteAddress = quoteAddress;
+    loadBirdeyeChart();
+  }
 
   onMount(async () => {
     if (!browser) return;
@@ -39,40 +50,43 @@
     error = null;
 
     try {
+      console.log('birdeye', baseAddress, quoteAddress);
+      console.log(`https://birdeye.so/tv-widget/${baseAddress}/${quoteAddress}?chain=bsc&viewMode=base%2Fquote&chartInterval=15&chartType=Candle&chartTimezone=Etc%2FUTC&chartLeftToolbar=show&theme=dark`)
+      
       // Create iframe for Birdeye chart
       const iframe = document.createElement('iframe');
-      iframe.src = `https://birdeye.so/tv-widget/bsc/${tokenAddress}?chain=bsc&viewMode=base&chartInterval=15m&chartType=CANDLE&chartTimezone=Etc%2FUTC&hotkey=false&locale=en&theme=dark`;
+      
+      // Set up load handler before setting src
+      iframe.onload = () => {
+        console.log('iframe loaded');
+        loading = false;
+      };
+
+      iframe.onerror = () => {
+        console.error('Chart widget failed to load');
+        error = 'Failed to load chart widget';
+        loading = false;
+      };
+
       iframe.width = '100%';
       iframe.height = `${height}px`;
       iframe.style.border = 'none';
       iframe.style.borderRadius = '8px';
       iframe.allow = 'clipboard-write';
       iframe.loading = 'lazy';
-
+      
       // Clear container and add iframe
       chartContainer.innerHTML = '';
       chartContainer.appendChild(iframe);
 
-      // Handle iframe load
-      iframe.onload = () => {
-        loading = false;
-      };
-
-      iframe.onerror = () => {
-        error = 'Failed to load chart widget';
-        loading = false;
-      };
+      // Set src after all other properties and handlers are set
+      iframe.src = `https://birdeye.so/tv-widget/${baseAddress}/${quoteAddress}?chain=bsc&viewMode=base%2Fquote&chartInterval=15&chartType=Candle&chartTimezone=Etc%2FUTC&chartLeftToolbar=show&theme=dark`;
 
     } catch (e) {
       console.error('Chart loading error:', e);
       error = 'Chart unavailable';
       loading = false;
     }
-  }
-
-  // Reload chart when symbol changes
-  $: if (browser && chartContainer && symbol) {
-    loadBirdeyeChart();
   }
 
   onDestroy(() => {
@@ -87,7 +101,7 @@
     <div class="chart-loading" style="height: {height}px;">
       <div class="loading-spinner">
         <div class="spinner"></div>
-        <p class="text-gray-400 mt-4">Loading {symbol} chart...</p>
+        <p class="text-gray-400 mt-4">Loading {baseToken}-{quoteToken} chart...</p>
       </div>
     </div>
   {/if}
