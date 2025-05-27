@@ -4,7 +4,7 @@
   import MarketSelectorButton from '$lib/components/MarketSelectorButton.svelte';
   import PositionsTable from '$lib/components/PositionsTable.svelte';
   import { isAuthenticated } from '$lib/stores/auth';
-  import { openPositions } from '$lib/stores/positions';
+  import { openPositions, loadPositions } from '$lib/stores/positions';
   import { blockchain } from '$lib/stores/blockchain';
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
   import { markets, selectedMarket, currentMarket, loading, startUpdates, stopUpdates } from '$lib/stores/markets';
@@ -39,6 +39,10 @@
       stopUpdates();
     }
   });
+
+  $: if ($isAuthenticated) {
+    loadPositions();
+  }
 
   $: priceChangeFormatted = formatPriceChange(priceChange24h);
   $: currentToken = $selectedMarket.split('-')[0];
@@ -126,11 +130,13 @@
     <div class="space-y-6">
       <TradingPanel />
 
-      {#if $openPositions.length > 0}
-        <div class="card">
+      <div class="card">
+        {#if $openPositions.length > 0}
           <PositionsTable />
-        </div>
-      {/if}
+        {:else}
+          <p class="text-center text-gray-400 py-4">No positions yet</p>
+        {/if}
+      </div>
 
       <div class="card space-y-3">
         <h3 class="text-sm font-semibold text-gray-400 flex items-center gap-2">
