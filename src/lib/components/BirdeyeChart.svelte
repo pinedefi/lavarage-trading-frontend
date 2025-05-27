@@ -6,6 +6,7 @@
   import type { TokenModel } from '$lib/services/offers';
 
   export let height: number = 400;
+  export let symbol: string = '';
   
   let chartContainer: HTMLDivElement;
   let loading = true;
