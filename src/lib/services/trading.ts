@@ -31,6 +31,7 @@ interface TransactionBscModel {
   gasLimit?: string;
   gasPrice?: string;
   txHash?: string;
+  value?: string;
 }
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://ng-api.lavarave.wtf/api/sdk/v1.0';
@@ -69,8 +70,8 @@ export async function openLongPosition(params: OpenPositionParams): Promise<stri
     account: account.address,
     to: tx.to as `0x${string}`,
     data: tx.data as `0x${string}`,
-    gas: tx.gasLimit ? BigInt(tx.gasLimit) : undefined,
     gasPrice: tx.gasPrice ? BigInt(tx.gasPrice) : undefined,
+    value: tx.value ? BigInt(tx.value) : undefined,
   });
 
   await waitForTransactionReceipt(config, { hash });
