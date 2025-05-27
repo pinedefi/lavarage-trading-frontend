@@ -104,7 +104,7 @@ export async function loadPositions(): Promise<void> {
     const raw = await fetchPositionsEvm(address, 'open');
     const chain = get(blockchain).current;
     const mapped = raw.map((p: any) => ({
-      id: p.positionAddress || p.publicKey,
+      id: p.positionAddress || p.publicKey || `${Date.now()}-${Math.random().toString(36).substring(2)}`,
       blockchain: chain,
       asset: p.collateralToken?.symbol || 'N/A',
       type: 'long',
