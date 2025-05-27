@@ -5,6 +5,7 @@
   import { Zap, TrendingUp } from 'lucide-svelte';
   import { getMarketData, type MarketData } from '$lib/services/offers';
   import { selectedMarket as selectedMarketStore } from '$lib/stores/markets';
+  import { openLongPosition } from '$lib/services/trading';
   import { onMount } from 'svelte';
   
   let collateral = 0.1;
@@ -49,11 +50,20 @@
     isOpening = true;
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      const txHash = await openLongPosition({
+        blockchain: $blockchain.current,
+        asset: $selectedMarketStore,
+        collateral,
+        leverage,
+        collateralAddress: currentMarket?.collateralToken?.address || '',
+        quoteToken:
+          typeof currentMarket?.quoteToken === 'string'
+            ? currentMarket?.quoteToken
+            : currentMarket?.quoteToken?.address || '',
+      });
+
       const position = {
-        id: Date.now().toString(),
+        id: txHash,
         type: 'long' as const,
         asset: $selectedMarketStore,
         collateral,
@@ -68,14 +78,13 @@
         blockchain: $blockchain.current,
         status: 'open' as const,
       };
-      
+
       positions.addPosition(position);
-      
-      // Reset form
+
       collateral = 0.1;
       leverage = 10;
-      
-      alert('Position opened successfully!');
+
+      alert(`Transaction submitted: ${txHash}`);
     } catch (error) {
       console.error('Failed to open position:', error);
       alert('Failed to open position. Please try again.');

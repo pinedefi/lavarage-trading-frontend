@@ -53,6 +53,12 @@ function createPositionsStore() {
         positions: state.positions.filter(p => p.id !== id)
       }));
     },
+    setPositions: (items: Position[]) => {
+      update(state => ({
+        ...state,
+        positions: items
+      }));
+    },
     setLoading: (loading: boolean) => {
       update(state => ({ ...state, loading }));
     },

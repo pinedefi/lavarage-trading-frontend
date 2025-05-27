@@ -2,8 +2,10 @@
   import TradingPanel from '$lib/components/TradingPanel.svelte';
   import BirdeyeChart from '$lib/components/BirdeyeChart.svelte';
   import MarketSelectorButton from '$lib/components/MarketSelectorButton.svelte';
-  import { isAuthenticated } from '$lib/stores/auth';
-  import { openPositions } from '$lib/stores/positions';
+  import PositionsTable from '$lib/components/PositionsTable.svelte';
+  import { isAuthenticated, walletAddress } from '$lib/stores/auth';
+  import { openPositions, positions } from '$lib/stores/positions';
+  import { fetchPositions } from '$lib/services/trading';
   import { blockchain } from '$lib/stores/blockchain';
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
   import { markets, selectedMarket, currentMarket, loading, startUpdates, stopUpdates } from '$lib/stores/markets';
@@ -27,9 +29,18 @@
     selectedMarket.set(market.symbol);
   }
 
-  onMount(() => {
+  onMount(async () => {
     if (browser) {
       startUpdates();
+    }
+
+    if ($isAuthenticated && $walletAddress) {
+      try {
+        const list = await fetchPositions($walletAddress, 'open');
+        positions.setPositions(list);
+      } catch (e) {
+        console.error('Failed to fetch positions', e);
+      }
     }
   });
 
@@ -124,7 +135,11 @@
     
     <div class="space-y-6">
       <TradingPanel />
-      
+
+      <div class="card">
+        <PositionsTable />
+      </div>
+
       <div class="card space-y-3">
         <h3 class="text-sm font-semibold text-gray-400 flex items-center gap-2">
           <Shield class="w-4 h-4" />
