@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { positions } from '$lib/stores/positions';
+  import { positions, openPositions } from '$lib/stores/positions';
   import { closePosition } from '$lib/services/trading';
-  import type { Position } from '$lib/stores/positions';
 
   let closing: Record<string, boolean> = {};
 
@@ -31,7 +30,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each $positions.positions.filter(p => p.status === 'open') as p (p.id)}
+    {#each $openPositions as p (p.id)}
       <tr class="border-b border-white/10">
         <td class="px-3 py-2 font-mono">{p.asset}</td>
         <td class="px-3 py-2 text-right font-mono">{p.size.toFixed(4)}</td>
