@@ -1,6 +1,7 @@
 <script lang="ts">
   import { isAuthenticated } from '$lib/stores/auth';
   import { openPositions, totalPnL, totalCollateral } from '$lib/stores/positions';
+  import { formatNumber } from '$lib/utils/formatters';
   import PositionCard from '$lib/components/PositionCard.svelte';
   import { Activity, TrendingUp, DollarSign, AlertCircle } from 'lucide-svelte';
   
@@ -37,7 +38,7 @@
           <p class="text-sm text-gray-400">Total Collateral</p>
           <DollarSign class="w-4 h-4 text-purple-400" />
         </div>
-        <p class="text-2xl font-mono font-semibold">{$totalCollateral.toFixed(4)}</p>
+        <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)}</p>
       </div>
       
       <div class="card">
@@ -46,7 +47,7 @@
           <TrendingUp class="w-4 h-4 {$totalPnL >= 0 ? 'text-green-400' : 'text-red-400'}" />
         </div>
         <p class="text-2xl font-mono font-semibold {$totalPnL >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {$totalPnL >= 0 ? '+' : ''}{$totalPnL.toFixed(4)}
+          {$totalPnL >= 0 ? '+' : ''}{formatNumber($totalPnL, 4)}
         </p>
       </div>
       
@@ -55,7 +56,7 @@
           <p class="text-sm text-gray-400">Total Value</p>
           <Activity class="w-4 h-4 text-orange-400" />
         </div>
-        <p class="text-2xl font-mono font-semibold">{totalValue.toFixed(4)}</p>
+        <p class="text-2xl font-mono font-semibold">{formatNumber(totalValue, 4)}</p>
       </div>
       
       <div class="card">
@@ -64,7 +65,7 @@
           <AlertCircle class="w-4 h-4 {totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}" />
         </div>
         <p class="text-2xl font-mono font-semibold {totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {totalReturn >= 0 ? '+' : ''}{totalReturn.toFixed(2)}%
+          {totalReturn >= 0 ? '+' : ''}{formatNumber(totalReturn, 2)}%
         </p>
       </div>
     </div>
