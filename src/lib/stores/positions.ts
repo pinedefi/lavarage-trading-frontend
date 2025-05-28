@@ -4,9 +4,12 @@ import type { SupportedBlockchain } from './blockchain';
 import { fetchPositionsEvm } from '$lib/services/positions';
 import { walletAddress } from './auth';
 import { blockchain } from './blockchain';
+import { formatPrice } from '$lib/services/birdeye';
+import BigNumber from 'bignumber.js';
 
 export interface Position {
   id: string;
+  loanId: number;
   blockchain: SupportedBlockchain;
   asset: string;
   type: 'long' | 'short';
@@ -108,15 +111,16 @@ export async function loadPositions(): Promise<void> {
     const chain = get(blockchain).current;
     const mapped = raw.map((p: any) => ({
       id: p.positionAddress || p.publicKey || `${Date.now()}-${Math.random().toString(36).substring(2)}`,
+      loanId: p.loanId,
       blockchain: chain,
-      asset: p.collateralToken?.symbol || 'N/A',
+      asset: p.token?.symbol || 'N/A',
       type: 'long',
-      entryPrice: Number(p.entryPrice) || 0,
-      currentPrice: Number(p.currentPrice) || 0,
-      size: Number(p.currentPositionBase || p.initialPositionBase) || 0,
-      leverage: p.currentLtv ? Math.round(1 / Number(p.currentLtv)) : 1,
+      entryPrice: Number(p.openingPositionSize) / 1e18 / (Number(p.collateralAmount) / 10 ** p.token.decimals),
+      currentPrice: Number(p.offers[0].priceVsQuote) || 0,
+      size: Number(p.collateralAmount) / 10 ** p.token.decimals || 0,
+      leverage: Number(p.openingPositionSize) / Number(p.initialMargin),
       collateral: Number(p.initialPositionBase) || 0,
-      pnl: 0,
+      pnl: (Number(p.offers[0].priceVsQuote) - Number(p.openingPositionSize) / 1e18 / (Number(p.collateralAmount) / 10 ** p.token.decimals)) * Number(p.collateralAmount) / 10 ** p.token.decimals,
       pnlPercentage: 0,
       liquidationPrice: Number(p.liquidationPrice) || 0,
       timestamp: p.openTimestamp ? Date.parse(p.openTimestamp) : Date.now(),

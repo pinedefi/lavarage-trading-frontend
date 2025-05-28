@@ -93,7 +93,7 @@ export async function openLongPosition(
   return hash;
 }
 
-export async function closePosition(positionId: string): Promise<string> {
+export async function closePosition(positionId: number): Promise<string> {
   const account = getCurrentAccount();
   if (!account.address) throw new Error("Wallet not connected");
 

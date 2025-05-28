@@ -103,7 +103,7 @@ export function formatPrice(price: number): string {
     const significantDigits = price * Math.pow(10, leadingZeros + 1);
     // Convert number to subscript
     const subscript = leadingZeros.toString().split('').map(d => '₀₁₂₃₄₅₆₇₈₉'[parseInt(d)]).join('');
-    return `0.0${subscript}${significantDigits.toFixed(4)}`;
+    return `0.0${subscript}${(Number(significantDigits.toFixed(4)) * 10000).toFixed(0)}`;
   }
 }
 

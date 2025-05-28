@@ -86,6 +86,12 @@
         
         <BirdeyeChart symbol={currentToken} height={400} />
       </div>
+
+      {#if $openPositions.length > 0}
+        <div class="card">
+          <PositionsTable />
+        </div>
+      {/if}
       
       <div class="card space-y-4">
         <h2 class="text-lg font-semibold flex items-center gap-2">
@@ -129,14 +135,6 @@
     
     <div class="space-y-6">
       <TradingPanel />
-
-      <div class="card">
-        {#if $openPositions.length > 0}
-          <PositionsTable />
-        {:else}
-          <p class="text-center text-gray-400 py-4">No positions yet</p>
-        {/if}
-      </div>
 
       <div class="card space-y-3">
         <h3 class="text-sm font-semibold text-gray-400 flex items-center gap-2">

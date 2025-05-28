@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/adapter-netlify": "^5.0.2",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/node": "^20.0.0",
@@ -26,6 +27,7 @@
   "dependencies": {
     "@wagmi/connectors": "^5.8.3",
     "@wagmi/core": "^2.17.2",
+    "bignumber.js": "^9.3.0",
     "ethers": "^6.9.0",
     "lucide-svelte": "^0.298.0",
     "svelte-wagmi": "^1.0.7",
