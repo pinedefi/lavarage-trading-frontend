@@ -6,7 +6,7 @@
 
   let closing: Record<string, boolean> = {};
 
-  $: filtered = $openPositions.filter(p => p.asset === $selectedMarket);
+  $: filtered = $openPositions.filter(p => p.asset === $selectedMarket.split('-')[0].trim());
 
 
 
