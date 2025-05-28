@@ -63,12 +63,12 @@
   <div class="grid grid-cols-2 gap-4 mb-4">
     <div>
       <p class="text-xs text-gray-400 mb-1">Entry Price</p>
-      <p class="font-mono font-medium">${formatNumber(position.entryPrice, 2)}</p>
+      <p class="font-mono font-medium">${formatPrice(position.entryPrice)}</p>
     </div>
     
     <div>
       <p class="text-xs text-gray-400 mb-1">Current Price</p>
-      <p class="font-mono font-medium">${formatNumber(position.currentPrice, 2)}</p>
+      <p class="font-mono font-medium">${formatPrice(position.currentPrice)}</p>
     </div>
     
     <div>
@@ -101,7 +101,7 @@
     
     <div class="mt-3 p-2 bg-orange-500/10 border border-orange-500/20 rounded-lg">
       <p class="text-xs text-orange-400">
-        Liquidation: ${formatNumber(position.liquidationPrice, 2)}
+        Liquidation: ${formatPrice(position.liquidationPrice)}
       </p>
     </div>
   </div>

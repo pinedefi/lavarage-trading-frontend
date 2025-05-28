@@ -35,6 +35,7 @@
         <th class="px-3 py-2 text-right">Entry</th>
         <th class="px-3 py-2 text-right">Price</th>
         <th class="px-3 py-2 text-right">Lev</th>
+        <th class="px-3 py-2 text-right">Liquidation</th>
 
       </tr>
     </thead>
@@ -54,7 +55,7 @@
           <td class="px-3 py-2 text-right font-mono">{formatPrice(p.entryPrice)} BNB</td>
           <td class="px-3 py-2 text-right font-mono">{formatPrice(p.currentPrice)} BNB</td>
           <td class="px-3 py-2 text-right font-mono">{p.leverage}x</td>
-          
+          <td class="px-3 py-2 text-right font-mono">{formatPrice(p.liquidationPrice)} BNB</td>
           
         </tr>
       {/each}
