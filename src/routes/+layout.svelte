@@ -1,15 +1,28 @@
 <script lang="ts">
   import '../app.css';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { restoreWalletSession } from '$lib/services/wallet';
+  import { isAuthenticated } from '$lib/stores/auth';
+  import { startPositionsUpdates, stopPositionsUpdates } from '$lib/stores/positions';
   import Nav from '$lib/components/Nav.svelte';
 
   onMount(async () => {
     try {
       await restoreWalletSession();
+      if ($isAuthenticated) startPositionsUpdates();
     } catch (e) {
       console.warn('Failed to restore wallet session:', e);
     }
+  });
+
+  $: if ($isAuthenticated) {
+    startPositionsUpdates();
+  } else {
+    stopPositionsUpdates();
+  }
+
+  onDestroy(() => {
+    stopPositionsUpdates();
   });
 </script>
 

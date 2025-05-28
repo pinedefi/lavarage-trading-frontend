@@ -1,9 +1,14 @@
 <script lang="ts">
   import { positions, openPositions } from '$lib/stores/positions';
   import { closePosition } from '$lib/services/trading';
-    import { formatPrice } from '$lib/services/birdeye';
+  import { selectedMarket } from '$lib/stores/markets';
+  import { formatNumber } from '$lib/utils/formatters';
 
   let closing: Record<string, boolean> = {};
+
+  $: filtered = $openPositions.filter(p => p.asset === $selectedMarket);
+
+
 
   async function handleClose(id: number, positionId: string) {
     closing[id] = true;
@@ -29,11 +34,11 @@
         <th class="px-3 py-2 text-right">Entry</th>
         <th class="px-3 py-2 text-right">Price</th>
         <th class="px-3 py-2 text-right">Lev</th>
-        
+
       </tr>
     </thead>
     <tbody>
-      {#each $openPositions as p (p.id)}
+      {#each filtered as p (p.id)}
         <tr class="border-b border-white/10">
         <td class="px-3 py-2 text-right">
             <button class="btn-secondary text-xs" disabled={closing[p.loanId]} on:click={() => handleClose(p.loanId, p.id)}>

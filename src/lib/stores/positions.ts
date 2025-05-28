@@ -1,4 +1,5 @@
 import { writable, derived, get } from 'svelte/store';
+import { browser } from '$app/environment';
 import type { SupportedBlockchain } from './blockchain';
 import { fetchPositionsEvm } from '$lib/services/positions';
 import { walletAddress } from './auth';
@@ -95,6 +96,8 @@ export const totalCollateral = derived(
   $openPositions => $openPositions.reduce((sum, p) => sum + p.collateral, 0)
 );
 
+let updateInterval: NodeJS.Timeout | null = null;
+
 
 export async function loadPositions(): Promise<void> {
   const address = get(walletAddress);
@@ -130,5 +133,18 @@ export async function loadPositions(): Promise<void> {
     positions.setError('Failed to load positions');
   } finally {
     positions.setLoading(false);
+  }
+}
+
+export function startPositionsUpdates(interval = 10000) {
+  if (!browser || updateInterval) return;
+  loadPositions();
+  updateInterval = setInterval(loadPositions, interval);
+}
+
+export function stopPositionsUpdates() {
+  if (updateInterval) {
+    clearInterval(updateInterval);
+    updateInterval = null;
   }
 }
