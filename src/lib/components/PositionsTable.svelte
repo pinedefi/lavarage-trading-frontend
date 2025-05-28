@@ -3,6 +3,7 @@
   import { closePosition } from '$lib/services/trading';
   import { selectedMarket } from '$lib/stores/markets';
   import { formatNumber } from '$lib/utils/formatters';
+  import { formatPrice } from '$lib/services/birdeye';
 
   let closing: Record<string, boolean> = {};
 
