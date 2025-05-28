@@ -1,8 +1,12 @@
 <script lang="ts">
   import { positions, openPositions } from '$lib/stores/positions';
   import { closePosition } from '$lib/services/trading';
+  import { selectedMarket } from '$lib/stores/markets';
+  import { formatNumber } from '$lib/utils/formatters';
 
   let closing: Record<string, boolean> = {};
+
+  $: filtered = $openPositions.filter(p => p.asset === $selectedMarket);
 
   async function handleClose(id: string) {
     closing[id] = true;
@@ -30,15 +34,15 @@
     </tr>
   </thead>
   <tbody>
-    {#each $openPositions as p (p.id)}
+    {#each filtered as p (p.id)}
       <tr class="border-b border-white/10">
         <td class="px-3 py-2 font-mono">{p.asset}</td>
-        <td class="px-3 py-2 text-right font-mono">{p.size.toFixed(4)}</td>
-        <td class="px-3 py-2 text-right font-mono">${p.entryPrice.toFixed(2)}</td>
-        <td class="px-3 py-2 text-right font-mono">${p.currentPrice.toFixed(2)}</td>
+        <td class="px-3 py-2 text-right font-mono">{formatNumber(p.size, 4)}</td>
+        <td class="px-3 py-2 text-right font-mono">${formatNumber(p.entryPrice, 2)}</td>
+        <td class="px-3 py-2 text-right font-mono">${formatNumber(p.currentPrice, 2)}</td>
         <td class="px-3 py-2 text-right font-mono">{p.leverage}x</td>
         <td class="px-3 py-2 text-right font-mono {p.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {p.pnl >= 0 ? '+' : ''}{p.pnl.toFixed(2)}
+          {p.pnl >= 0 ? '+' : ''}{formatNumber(p.pnl, 2)}
         </td>
         <td class="px-3 py-2 text-right">
           <button class="btn-secondary text-xs" disabled={closing[p.id]} on:click={() => handleClose(p.id)}>
