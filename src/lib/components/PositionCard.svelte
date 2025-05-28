@@ -4,6 +4,7 @@
   import { closePosition } from '$lib/services/trading';
   import { formatNumber } from '$lib/utils/formatters';
   import { TrendingUp, Loader2 } from 'lucide-svelte';
+  import { formatPrice } from '$lib/services/birdeye';
   
   export let position: Position;
   
