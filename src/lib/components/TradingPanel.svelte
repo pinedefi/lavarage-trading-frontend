@@ -126,10 +126,10 @@
       const position = {
         id: txHash,
         type: 'long' as const,
-        asset: $selectedMarketStore,
+        asset: $selectedMarketStore.split('-')[0].trim(),
         collateral,
         leverage,
-        size: positionSize,
+        size: -1,
         entryPrice: currentPrice,
         currentPrice: currentPrice,
         liquidationPrice,
