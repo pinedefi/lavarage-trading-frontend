@@ -83,7 +83,12 @@ export const positions = createPositionsStore();
 
 export const openPositions = derived(
   positions,
-  $positions => $positions.positions.filter(p => p.status === 'open')
+  ($positions) => $positions.positions.filter((p) => p.status === 'open')
+);
+
+export const closedPositions = derived(
+  positions,
+  ($positions) => $positions.positions.filter((p) => p.status !== 'open')
 );
 
 export const totalPnL = derived(
@@ -99,7 +104,7 @@ export const totalCollateral = derived(
 let updateInterval: NodeJS.Timeout | null = null;
 
 
-export async function loadPositions(): Promise<void> {
+export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise<void> {
   const address = get(walletAddress);
   if (!address) return;
 
@@ -107,7 +112,7 @@ export async function loadPositions(): Promise<void> {
   positions.setError(null);
 
   try {
-    const raw = await fetchPositionsEvm(address, 'open');
+    const raw = await fetchPositionsEvm(address, status);
     const chain = get(blockchain).current;
     const mapped = raw.map((p: any) => ({
       id: p.positionAddress || p.publicKey || `${Date.now()}-${Math.random().toString(36).substring(2)}`,

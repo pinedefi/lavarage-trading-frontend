@@ -1,7 +1,7 @@
 <script lang="ts">
   import { isAuthenticated } from '$lib/stores/auth';
   import { blockchain } from '$lib/stores/blockchain';
-  import { positions } from '$lib/stores/positions';
+  import { positions, type Position } from '$lib/stores/positions';
   import { Zap, TrendingUp } from 'lucide-svelte';
   import { getMarketData, type MarketData } from '$lib/services/offers';
   import { selectedMarket as selectedMarketStore } from '$lib/stores/markets';
@@ -123,9 +123,10 @@
             : currentMarket?.quoteToken?.address || '',
       });
 
-      const position = {
+      const position: Position = {
         id: txHash,
-        type: 'long' as const,
+        loanId: -1,
+        type: 'long',
         asset: $selectedMarketStore.split('-')[0].trim(),
         collateral,
         leverage,
@@ -137,7 +138,7 @@
         pnlPercentage: 0,
         timestamp: Date.now(),
         blockchain: $blockchain.current,
-        status: 'open' as const,
+        status: 'open',
       };
 
       positions.addPosition(position);

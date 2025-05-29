@@ -13,7 +13,7 @@
   async function handleClose() {
     closing = true;
     try {
-      await closePosition(position.id);
+      await closePosition(position.loanId);
       positions.updatePosition(position.id, { status: 'closed' });
     } catch (e) {
       console.error('Failed to close position:', e);
