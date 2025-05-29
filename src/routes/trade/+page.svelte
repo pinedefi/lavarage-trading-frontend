@@ -46,6 +46,10 @@
 
   $: priceChangeFormatted = formatPriceChange(priceChange24h);
   $: currentToken = $selectedMarket.split('-')[0];
+  $: maxLeverageDisplay = $currentMarket ? `${$currentMarket.maxLeverage}x` : '--';
+  $: interestPerDay = $currentMarket ? `${($currentMarket.apr / 365).toFixed(2)}%` : '--';
+  $: openInterest = $currentMarket ? formatVolume(Number($currentMarket.currentExposure ?? $currentMarket.availableForOpen)) : '--';
+  $: minPosition = $currentMarket?.maxOpenPerTrade ? `${Number($currentMarket.maxOpenPerTrade).toLocaleString()} ${currentToken}` : '--';
 </script>
 
 <div class="max-w-6xl mx-auto">
@@ -103,15 +107,15 @@
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-gray-400">Max Leverage</span>
-              <span class="font-mono">100x</span>
+              <span class="font-mono">{maxLeverageDisplay}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400">Funding Rate</span>
-              <span class="font-mono text-green-400">+0.01%</span>
+              <span class="text-gray-400">Interest / Day</span>
+              <span class="font-mono text-green-400">{interestPerDay}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Open Interest</span>
-              <span class="font-mono">$1.2B</span>
+              <span class="font-mono">{openInterest}</span>
             </div>
           </div>
           
@@ -126,7 +130,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Min Position</span>
-              <span class="font-mono">0.001 {currentToken}</span>
+              <span class="font-mono">{minPosition}</span>
             </div>
           </div>
         </div>

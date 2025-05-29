@@ -49,6 +49,10 @@ export interface MarketData {
   maxLeverage: number;
   apr: number;
   availableForOpen: string;
+  maxBorrow?: string;
+  maxOpenPerTrade?: string;
+  maxExposure?: string;
+  currentExposure?: string;
   collateralToken?: TokenModel;
   quoteToken: TokenModel | string;
   priceVsQuote: string;
@@ -128,6 +132,10 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
     maxLeverage: offer.maxLeverage,
     apr: offer.apr,
     availableForOpen: offer.availableForOpen,
+    maxBorrow: offer.maxBorrow,
+    maxOpenPerTrade: offer.maxOpenPerTrade,
+    maxExposure: offer.maxExposure,
+    currentExposure: offer.currentExposure,
     collateralToken: offer.collateralToken,
     quoteToken: offer.quoteToken,
     priceVsQuote: offer.priceVsQuote,
@@ -159,6 +167,10 @@ export function getMockMarketData(): MarketData[] {
       maxLeverage: 10,
       apr: 12.5,
       availableForOpen: '1000000000000',
+      maxBorrow: '500000000000',
+      maxOpenPerTrade: '100000000000',
+      maxExposure: '2000000000000',
+      currentExposure: '800000000000',
       quoteToken: 'BNB',
       priceVsQuote: '1.0000',
     },
@@ -174,6 +186,10 @@ export function getMockMarketData(): MarketData[] {
       maxLeverage: 20,
       apr: 8.2,
       availableForOpen: '2000000000000',
+      maxBorrow: '1000000000000',
+      maxOpenPerTrade: '200000000000',
+      maxExposure: '4000000000000',
+      currentExposure: '1500000000000',
       quoteToken: 'BNB',
       priceVsQuote: '1.0001',
     },
@@ -189,6 +205,10 @@ export function getMockMarketData(): MarketData[] {
       maxLeverage: 20,
       apr: 7.8,
       availableForOpen: '1800000000000',
+      maxBorrow: '800000000000',
+      maxOpenPerTrade: '150000000000',
+      maxExposure: '3500000000000',
+      currentExposure: '1200000000000',
       quoteToken: 'BNB',
       priceVsQuote: '0.9999',
     },
@@ -204,8 +224,12 @@ export function getMockMarketData(): MarketData[] {
       maxLeverage: 15,
       apr: 15.3,
       availableForOpen: '500000000000',
+      maxBorrow: '250000000000',
+      maxOpenPerTrade: '50000000000',
+      maxExposure: '1000000000000',
+      currentExposure: '200000000000',
       quoteToken: 'BNB',
       priceVsQuote: '1.0000',
     },
   ];
-} 
+}
