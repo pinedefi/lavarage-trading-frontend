@@ -102,6 +102,7 @@ export const totalCollateral = derived(
 );
 
 let updateInterval: NodeJS.Timeout | null = null;
+let updateStatus: 'open' | 'closed' = 'open';
 
 
 export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise<void> {
@@ -141,10 +142,12 @@ export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise
   }
 }
 
-export function startPositionsUpdates(interval = 10000) {
-  if (!browser || updateInterval) return;
-  loadPositions();
-  updateInterval = setInterval(loadPositions, interval);
+export function startPositionsUpdates(status: 'open' | 'closed' = 'open', interval = 10000) {
+  if (!browser) return;
+  stopPositionsUpdates();
+  updateStatus = status;
+  loadPositions(status);
+  updateInterval = setInterval(() => loadPositions(updateStatus), interval);
 }
 
 export function stopPositionsUpdates() {
