@@ -20,7 +20,10 @@
 
   $: positionsList = showClosed ? $closedPositions : $openPositions;
 
-  $: totalValue = $totalCollateral + $totalPnL;
+  $: totalEquity = $openPositions.reduce(
+    (sum, p) => sum + p.collateral * p.currentPrice,
+    0
+  );
   $: totalReturn = $totalCollateral > 0 ? ($totalPnL / $totalCollateral) * 100 : 0;
 </script>
 
@@ -50,10 +53,10 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div class="card">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-sm text-gray-400">Total Collateral</p>
+          <p class="text-sm text-gray-400">Total Collateral (BNB)</p>
           <DollarSign class="w-4 h-4 text-purple-400" />
         </div>
-        <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)}</p>
+        <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} BNB</p>
       </div>
       
       <div class="card">
@@ -68,10 +71,10 @@
       
       <div class="card">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-sm text-gray-400">Total Value</p>
+          <p class="text-sm text-gray-400">Total Equity</p>
           <Activity class="w-4 h-4 text-orange-400" />
         </div>
-        <p class="text-2xl font-mono font-semibold">{formatNumber(totalValue, 4)}</p>
+        <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)}</p>
       </div>
       
       <div class="card">
