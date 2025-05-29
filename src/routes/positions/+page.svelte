@@ -5,9 +5,7 @@
     closedPositions,
     totalPnL,
     totalCollateral,
-    loadPositions,
-    startPositionsUpdates,
-    stopPositionsUpdates
+    startPositionsUpdates
   } from '$lib/stores/positions';
   import { formatNumber } from '$lib/utils/formatters';
   import PositionCard from '$lib/components/PositionCard.svelte';
@@ -17,9 +15,7 @@
 
   function toggleView() {
     showClosed = !showClosed;
-    stopPositionsUpdates();
-    loadPositions(showClosed ? 'closed' : 'open');
-    if (!showClosed) startPositionsUpdates();
+    startPositionsUpdates(showClosed ? 'closed' : 'open');
   }
 
   $: positionsList = showClosed ? $closedPositions : $openPositions;

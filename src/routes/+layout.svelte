@@ -9,14 +9,14 @@
   onMount(async () => {
     try {
       await restoreWalletSession();
-      if ($isAuthenticated) startPositionsUpdates();
+      if ($isAuthenticated) startPositionsUpdates('open');
     } catch (e) {
       console.warn('Failed to restore wallet session:', e);
     }
   });
 
   $: if ($isAuthenticated) {
-    startPositionsUpdates();
+    startPositionsUpdates('open');
   } else {
     stopPositionsUpdates();
   }
