@@ -1,10 +1,29 @@
 <script lang="ts">
   import { isAuthenticated } from '$lib/stores/auth';
-  import { openPositions, totalPnL, totalCollateral } from '$lib/stores/positions';
+  import {
+    openPositions,
+    closedPositions,
+    totalPnL,
+    totalCollateral,
+    loadPositions,
+    startPositionsUpdates,
+    stopPositionsUpdates
+  } from '$lib/stores/positions';
   import { formatNumber } from '$lib/utils/formatters';
   import PositionCard from '$lib/components/PositionCard.svelte';
   import { Activity, TrendingUp, DollarSign, AlertCircle } from 'lucide-svelte';
-  
+
+  let showClosed = false;
+
+  function toggleView() {
+    showClosed = !showClosed;
+    stopPositionsUpdates();
+    loadPositions(showClosed ? 'closed' : 'open');
+    if (!showClosed) startPositionsUpdates();
+  }
+
+  $: positionsList = showClosed ? $closedPositions : $openPositions;
+
   $: totalValue = $totalCollateral + $totalPnL;
   $: totalReturn = $totalCollateral > 0 ? ($totalPnL / $totalCollateral) * 100 : 0;
 </script>
@@ -72,16 +91,25 @@
     
     <div class="space-y-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold">Open Positions ({$openPositions.length})</h2>
+        <h2 class="text-xl font-semibold">
+          {#if showClosed}
+            Closed Positions ({$closedPositions.length})
+          {:else}
+            Open Positions ({$openPositions.length})
+          {/if}
+        </h2>
         <div class="flex items-center gap-2">
-          <button class="btn-secondary text-sm">
-            Close All
+          {#if !showClosed}
+            <button class="btn-secondary text-sm">Close All</button>
+          {/if}
+          <button class="btn-secondary text-sm" on:click={toggleView}>
+            {showClosed ? 'View Open' : 'View Closed'}
           </button>
         </div>
       </div>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {#each $openPositions as position (position.id)}
+        {#each positionsList as position (position.id)}
           <div class="animate-fade-in">
             <PositionCard {position} />
           </div>
