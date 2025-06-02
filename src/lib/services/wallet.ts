@@ -130,29 +130,35 @@ export async function signMessage(message: string): Promise<string> {
 // Restore wallet session on page load
 export async function restoreWalletSession(): Promise<void> {
   if (!browser) return;
-  
+
   try {
     const account = getAccount(config);
-    
+
     if (account.isConnected && account.address) {
-      // Get balance
-      const balance = await getBalance(config, {
-        address: account.address,
-      });
-      
-      // Create user profile
+      // Already connected; sync state
+      const balance = await getBalance(config, { address: account.address });
+
       const profile: WalletProfile = {
         id: account.address,
         walletAddress: account.address,
         chain: account.chain?.name || 'bsc',
         walletName: account.connector?.name || 'Unknown Wallet',
-        balance: balance.formatted
+        balance: balance.formatted,
       };
-      
-      // Update auth store
+
       auth.setUser(profile);
+      return;
+    }
+
+    const stored = localStorage.getItem('wagmi_session');
+    if (!stored) return;
+
+    const { connectorId } = JSON.parse(stored);
+    const connector = config.connectors.find((c) => c.id === connectorId);
+    if (connector) {
+      await connectWallet(connector);
     }
   } catch (e) {
     console.warn('Failed to restore session:', e);
   }
-} 
+}
