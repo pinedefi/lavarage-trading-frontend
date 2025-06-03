@@ -47,7 +47,7 @@
   $: priceChangeFormatted = formatPriceChange(priceChange24h);
   $: currentToken = $selectedMarket.split('-')[0];
   $: maxLeverageDisplay = $currentMarket ? `${$currentMarket.maxLeverage}x` : '--';
-  $: interestPerDay = $currentMarket ? `${($currentMarket.apr / 365).toFixed(2)}%` : '--';
+  $: interestPerDay = $currentMarket ? `${($currentMarket.apr / 365 * 100).toFixed(2)}%` : '--';
   $: openInterest = $currentMarket ? formatVolume(Number($currentMarket.currentExposure ?? $currentMarket.availableForOpen)) : '--';
   $: minPosition = $currentMarket?.maxOpenPerTrade ? `${Number($currentMarket.maxOpenPerTrade).toLocaleString()} ${currentToken}` : '--';
 </script>
@@ -113,25 +113,25 @@
               <span class="text-gray-400">Interest / Day</span>
               <span class="font-mono text-green-400">{interestPerDay}</span>
             </div>
-            <div class="flex justify-between">
+            <!-- <div class="flex justify-between">
               <span class="text-gray-400">Open Interest</span>
               <span class="font-mono">{openInterest}</span>
-            </div>
+            </div> -->
           </div>
           
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-gray-400">Maintenance Margin</span>
-              <span class="font-mono">0.5%</span>
+              <span class="font-mono">10%</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Trading Fee</span>
-              <span class="font-mono">0.05%</span>
+              <span class="font-mono">1%</span>
             </div>
-            <div class="flex justify-between">
+            <!-- <div class="flex justify-between">
               <span class="text-gray-400">Min Position</span>
-              <span class="font-mono">{minPosition}</span>
-            </div>
+              <span class="font-mono">{minPosition} BNB</span>
+            </div> -->
           </div>
         </div>
       </div>
