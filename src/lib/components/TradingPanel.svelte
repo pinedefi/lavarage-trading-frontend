@@ -238,7 +238,7 @@
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Est. Fees</span>
-        <span class="font-mono">-{(collateral * 0.0085).toFixed(4)} {tokenSymbol}</span>
+        <span class="font-mono">-{(collateral * 0.0085).toFixed(4)} BNB</span>
       </div>
     </div>
     
