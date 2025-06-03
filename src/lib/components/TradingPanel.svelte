@@ -86,6 +86,9 @@
   $: positionSize = collateral * leverage;
   $: liquidationPrice = currentPrice * (1 - 1/leverage * 0.9); // Simplified calculation
   $: maxLeverage = currentMarket?.maxLeverage || 100;
+  $: if (leverage > maxLeverage) {
+    leverage = maxLeverage;
+  }
   
   async function openPosition() {
     if (!$isAuthenticated) {
