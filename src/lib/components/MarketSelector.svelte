@@ -304,32 +304,29 @@
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.4);
-    pointer-events: none;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 2.75rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .search-icon {
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    flex: 1;
+    background: none;
+    border: none;
     color: white;
     font-size: 0.875rem;
     line-height: 1.25rem;
+    outline: none;
   }
 
-  .search-input:focus {
-    outline: none;
+  .search-container:focus-within {
     border-color: #8b5cf6;
   }
 
