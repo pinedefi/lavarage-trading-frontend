@@ -98,9 +98,9 @@
           {/if}
         </h2>
         <div class="flex items-center gap-2">
-          {#if !showClosed}
+          <!-- {#if !showClosed}
             <button class="btn-secondary text-sm">Close All</button>
-          {/if}
+          {/if} -->
           <button class="btn-secondary text-sm" on:click={toggleView}>
             {showClosed ? 'View Open' : 'View Closed'}
           </button>

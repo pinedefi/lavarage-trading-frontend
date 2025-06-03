@@ -226,7 +226,7 @@
     <div class="space-y-3 p-4 bg-white/5 rounded-lg">
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Position Size</span>
-        <span class="font-mono">{positionSize.toFixed(4)} {tokenSymbol}</span>
+        <span class="font-mono">{positionSize.toFixed(4)} BNB</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Entry Price</span>
