@@ -308,16 +308,18 @@
 
   .search-icon {
     position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
     color: rgba(255, 255, 255, 0.4);
     pointer-events: none;
   }
 
   .search-input {
     width: 100%;
-    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    padding: 0.75rem 0.75rem 0.75rem 2.75rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
