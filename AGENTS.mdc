@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
 coding guidelines
 1. use svelte kit
 2. keep lines under 500 per file

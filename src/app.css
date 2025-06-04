@@ -18,7 +18,7 @@
   }
 
   body {
-    @apply bg-[#0a0a0a] text-gray-100 font-sans;
+    @apply bg-black text-gray-100 font-sans;
   }
 
   .font-mono {
@@ -28,7 +28,7 @@
 
 @layer components {
   .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-black/80 backdrop-blur-sm border border-white/10;
   }
 
   .glass-hover {
@@ -37,7 +37,7 @@
 
   .gradient-border {
     @apply relative;
-    background: linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+    background: linear-gradient(#000, #000) padding-box,
                 linear-gradient(135deg, #ef4444, #a855f7, #f97316) border-box;
     border: 1px solid transparent;
   }
@@ -52,7 +52,7 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg;
+    @apply w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg;
     @apply focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20;
     @apply placeholder-gray-500 text-white;
   }
