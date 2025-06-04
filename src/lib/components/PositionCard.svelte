@@ -64,22 +64,22 @@
   <div class="grid grid-cols-2 gap-4 mb-4">
     <div>
       <p class="text-xs text-gray-400 mb-1">Entry Price</p>
-      <p class="font-mono font-medium">${formatPrice(position.entryPrice)}</p>
+      <p class="font-mono font-medium">{formatPrice(position.entryPrice)} BNB</p>
     </div>
     
     <div>
       <p class="text-xs text-gray-400 mb-1">Current Price</p>
-      <p class="font-mono font-medium">${formatPrice(position.currentPrice)}</p>
+      <p class="font-mono font-medium">{formatPrice(position.currentPrice)} BNB</p>
     </div>
     
     <div>
       <p class="text-xs text-gray-400 mb-1">Position Size</p>
-      <p class="font-mono font-medium">{formatNumber(position.size, 4)}</p>
+      <p class="font-mono font-medium">{formatNumber(position.size, 4)} {position.asset}</p>
     </div>
     
     <div>
       <p class="text-xs text-gray-400 mb-1">Collateral</p>
-      <p class="font-mono font-medium">{formatNumber(position.collateral, 4)}</p>
+      <p class="font-mono font-medium">{formatNumber(position.collateral, 4)} BNB</p>
     </div>
   </div>
   
@@ -88,7 +88,7 @@
       <div>
         <p class="text-xs text-gray-400 mb-1">PnL</p>
         <p class="font-mono text-lg font-semibold {position.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {position.pnl >= 0 ? '+' : ''}{formatNumber(position.pnl, 4)}
+          {position.pnl >= 0 ? '+' : ''}{formatNumber(position.pnl, 4)} BNB
         </p>
       </div>
       

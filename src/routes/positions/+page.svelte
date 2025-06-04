@@ -39,15 +39,19 @@
       <h2 class="text-xl font-semibold mb-2">Connect Wallet to View Positions</h2>
       <p class="text-gray-400">Please connect your wallet to see your trading positions</p>
     </div>
-  {:else if $openPositions.length === 0}
+  {:else if (showClosed ? $closedPositions.length === 0 : $openPositions.length === 0)}
     <div class="card text-center py-12">
       <TrendingUp class="w-12 h-12 text-gray-500 mx-auto mb-4" />
-      <h2 class="text-xl font-semibold mb-2">No Open Positions</h2>
-      <p class="text-gray-400 mb-6">Start trading to see your positions here</p>
-      <a href="/trade" class="btn-primary inline-flex items-center gap-2">
-        <TrendingUp class="w-4 h-4" />
-        Open Position
-      </a>
+      <h2 class="text-xl font-semibold mb-2">No {showClosed ? 'Closed' : 'Open'} Positions</h2>
+      {#if showClosed}
+        <p class="text-gray-400">Your closed positions history will appear here</p>
+      {:else}
+        <p class="text-gray-400 mb-6">Start trading to see your positions here</p>
+        <a href="/trade" class="btn-primary inline-flex items-center gap-2">
+          <TrendingUp class="w-4 h-4" />
+          Open Position
+        </a>
+      {/if}
     </div>
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
