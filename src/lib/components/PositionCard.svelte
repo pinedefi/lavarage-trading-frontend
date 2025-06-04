@@ -47,18 +47,20 @@
       </div>
     </div>
     
-    <button
-      on:click={handleClose}
-      disabled={closing}
-      class="btn-secondary text-xs"
-    >
-      {#if closing}
-        <Loader2 class="w-4 h-4 animate-spin" />
-        <span class="sr-only">Closing...</span>
-      {:else}
-        Close
-      {/if}
-    </button>
+    {#if position.status !== 'closed'}
+      <button
+        on:click={handleClose}
+        disabled={closing}
+        class="btn-secondary text-xs"
+      >
+        {#if closing}
+          <Loader2 class="w-4 h-4 animate-spin" />
+          <span class="sr-only">Closing...</span>
+        {:else}
+          Close
+        {/if}
+      </button>
+    {/if}
   </div>
   
   <div class="grid grid-cols-2 gap-4 mb-4">
@@ -68,8 +70,8 @@
     </div>
     
     <div>
-      <p class="text-xs text-gray-400 mb-1">Current Price</p>
-      <p class="font-mono font-medium">{formatPrice(position.currentPrice)} BNB</p>
+      <p class="text-xs text-gray-400 mb-1">{position.status == 'closed' ? 'Closing' : 'Current'} Price</p>
+      <p class="font-mono font-medium">{formatPrice(position.status == 'closed' ? position.closingPositionSize / position.baseAmount : position.currentPrice)} BNB</p>
     </div>
     
     <div>

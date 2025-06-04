@@ -24,6 +24,7 @@ export interface Position {
   pnlPercentage: number;
   liquidationPrice: number;
   timestamp: number;
+  closingPositionSize: number;
   status: 'open' | 'closed' | 'liquidated';
 }
 
@@ -135,6 +136,7 @@ export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise
       timestamp: p.openTimestamp ? Date.parse(p.openTimestamp) : Date.now(),
       status: p.status === 'active' ? 'open' : p.status === 'liquidated' ? 'liquidated' : 'closed',
       realizedPnL: (Number(p.closingPositionSize) / 1e18 - Number(p.openingPositionSize) / 1e18)  || 0,
+      closingPositionSize: Number(p.closingPositionSize) / 1e18 || 0,
     }));
 
     positions.setPositions(mapped);
