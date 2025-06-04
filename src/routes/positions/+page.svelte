@@ -20,11 +20,29 @@
 
   $: positionsList = showClosed ? $closedPositions : $openPositions;
 
+  // Stats for open positions
   $: totalEquity = $openPositions.reduce(
-    (sum, p) => sum + p.collateral * p.currentPrice,
+    (sum, p) => sum + p.baseAmount * p.currentPrice,
     0
   );
   $: totalReturn = $totalCollateral > 0 ? ($totalPnL / $totalCollateral) * 100 : 0;
+
+  // Stats for closed positions
+  $: totalClosedPnL = $closedPositions.reduce(
+    (sum, p) => sum + (p.realizedPnL || 0),
+    0
+  );
+  $: totalInitialCollateral = $closedPositions.reduce(
+    (sum, p) => sum + p.collateral,
+    0
+  );
+  // $: totalClosedEquity = $closedPositions.reduce(
+  //   (sum, p) => sum + p.baseAmount * (p.closingPrice || p.currentPrice),
+  //   0
+  // );
+  $: totalClosedReturn = totalInitialCollateral > 0 
+    ? (totalClosedPnL / totalInitialCollateral) * 100 
+    : 0;
 </script>
 
 <div class="max-w-6xl mx-auto space-y-8">
@@ -54,40 +72,44 @@
       {/if}
     </div>
   {:else}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div class="card">
-        <div class="flex items-center justify-between mb-2">
-          <p class="text-sm text-gray-400">Total Collateral (BNB)</p>
-          <DollarSign class="w-4 h-4 text-purple-400" />
+    <div class="grid grid-cols-1 md:grid-cols-{showClosed ? '2' : '4'} gap-6">
+      {#if !showClosed}
+        <div class="card">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-sm text-gray-400">Total Collateral (BNB)</p>
+            <DollarSign class="w-4 h-4 text-purple-400" />
+          </div>
+          <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} BNB</p>
         </div>
-        <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} BNB</p>
-      </div>
+      {/if}
       
       <div class="card">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-sm text-gray-400">Total PnL</p>
-          <TrendingUp class="w-4 h-4 {$totalPnL >= 0 ? 'text-green-400' : 'text-red-400'}" />
+          <p class="text-sm text-gray-400">{showClosed ? 'Total Closed' : 'Total'} PnL</p>
+          <TrendingUp class="w-4 h-4 {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? 'text-green-400' : 'text-red-400'}" />
         </div>
-        <p class="text-2xl font-mono font-semibold {$totalPnL >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {$totalPnL >= 0 ? '+' : ''}{formatNumber($totalPnL, 4)}
+        <p class="text-2xl font-mono font-semibold {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? 'text-green-400' : 'text-red-400'}">
+          {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? '+' : ''}{formatNumber(showClosed ? totalClosedPnL : $totalPnL, 4)} BNB
         </p>
       </div>
       
-      <div class="card">
-        <div class="flex items-center justify-between mb-2">
-          <p class="text-sm text-gray-400">Total Equity</p>
-          <Activity class="w-4 h-4 text-orange-400" />
+      {#if !showClosed}
+        <div class="card">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-sm text-gray-400">Total Equity</p>
+            <Activity class="w-4 h-4 text-orange-400" />
+          </div>
+          <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)} BNB</p>
         </div>
-        <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)}</p>
-      </div>
+      {/if}
       
       <div class="card">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-sm text-gray-400">Total Return</p>
-          <AlertCircle class="w-4 h-4 {totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}" />
+          <p class="text-sm text-gray-400">{showClosed ? 'Total Closed' : 'Total'} Return</p>
+          <AlertCircle class="w-4 h-4 {(showClosed ? totalClosedReturn : totalReturn) >= 0 ? 'text-green-400' : 'text-red-400'}" />
         </div>
-        <p class="text-2xl font-mono font-semibold {totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {totalReturn >= 0 ? '+' : ''}{formatNumber(totalReturn, 2)}%
+        <p class="text-2xl font-mono font-semibold {(showClosed ? totalClosedReturn : totalReturn) >= 0 ? 'text-green-400' : 'text-red-400'}">
+          {(showClosed ? totalClosedReturn : totalReturn) >= 0 ? '+' : ''}{formatNumber(showClosed ? totalClosedReturn : totalReturn, 2)}%
         </p>
       </div>
     </div>
@@ -102,9 +124,6 @@
           {/if}
         </h2>
         <div class="flex items-center gap-2">
-          <!-- {#if !showClosed}
-            <button class="btn-secondary text-sm">Close All</button>
-          {/if} -->
           <button class="btn-secondary text-sm" on:click={toggleView}>
             {showClosed ? 'View Open' : 'View Closed'}
           </button>
