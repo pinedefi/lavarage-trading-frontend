@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { appConfig } from '$lib/config/appConfig';
 
 export interface TokenModel {
   address: string;
@@ -89,8 +90,8 @@ export async function fetchBscOffers(): Promise<OfferEvmModel[]> {
 
 export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
   const collateralToken = offer.collateralToken;
-  const quoteTokenSymbol = typeof offer.quoteToken === 'string' 
-    ? 'BNB' // Default for BSC
+  const quoteTokenSymbol = typeof offer.quoteToken === 'string'
+    ? appConfig.token.gas_symbol // Default for BSC
     : offer.quoteToken.symbol;
 
   const symbol = collateralToken 
@@ -103,7 +104,7 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
 
   // Mock price data - in a real app, you'd fetch this from a price API
   const mockPrices: Record<string, { price: number; change24h: number; volume: number }> = {
-    'BNB': { price: 542.18, change24h: 2.45, volume: 24800000000 },
+    [appConfig.token.gas_symbol]: { price: 542.18, change24h: 2.45, volume: 24800000000 },
     'WBNB': { price: 542.18, change24h: 2.45, volume: 24800000000 },
     'USDT': { price: 1.0001, change24h: 0.01, volume: 45000000000 },
     'USDC': { price: 0.9999, change24h: -0.01, volume: 38000000000 },
@@ -118,7 +119,7 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
   };
 
   const tokenSymbol = collateralToken?.symbol || 'UNKNOWN';
-  const priceData = mockPrices[tokenSymbol] || mockPrices['BNB'];
+  const priceData = mockPrices[tokenSymbol] || mockPrices[appConfig.token.gas_symbol];
 
   return {
     symbol,
@@ -156,8 +157,8 @@ export async function getMarketData(): Promise<MarketData[]> {
 export function getMockMarketData(): MarketData[] {
   return [
     {
-      symbol: 'BNB-BNB-PERP',
-      name: 'BNB Margin',
+      symbol: `${appConfig.token.gas_symbol}-${appConfig.token.gas_symbol}-PERP`,
+      name: `${appConfig.token.gas_symbol} Margin`,
       price: 542.18,
       change24h: 2.45,
       volume24h: 24800000000,
@@ -171,11 +172,11 @@ export function getMockMarketData(): MarketData[] {
       maxOpenPerTrade: '100000000000',
       maxExposure: '2000000000000',
       currentExposure: '800000000000',
-      quoteToken: 'BNB',
+      quoteToken: appConfig.token.gas_symbol,
       priceVsQuote: '1.0000',
     },
     {
-      symbol: 'USDT-BNB-PERP',
+      symbol: `USDT-${appConfig.token.gas_symbol}-PERP`,
       name: 'USDT Margin',
       price: 1.0001,
       change24h: 0.01,
@@ -190,11 +191,11 @@ export function getMockMarketData(): MarketData[] {
       maxOpenPerTrade: '200000000000',
       maxExposure: '4000000000000',
       currentExposure: '1500000000000',
-      quoteToken: 'BNB',
+      quoteToken: appConfig.token.gas_symbol,
       priceVsQuote: '1.0001',
     },
     {
-      symbol: 'USDC-BNB-PERP',
+      symbol: `USDC-${appConfig.token.gas_symbol}-PERP`,
       name: 'USDC Margin',
       price: 0.9999,
       change24h: -0.01,
@@ -209,11 +210,11 @@ export function getMockMarketData(): MarketData[] {
       maxOpenPerTrade: '150000000000',
       maxExposure: '3500000000000',
       currentExposure: '1200000000000',
-      quoteToken: 'BNB',
+      quoteToken: appConfig.token.gas_symbol,
       priceVsQuote: '0.9999',
     },
     {
-      symbol: 'CAKE-BNB-PERP',
+      symbol: `CAKE-${appConfig.token.gas_symbol}-PERP`,
       name: 'PancakeSwap Margin',
       price: 2.45,
       change24h: 3.21,
@@ -228,7 +229,7 @@ export function getMockMarketData(): MarketData[] {
       maxOpenPerTrade: '50000000000',
       maxExposure: '1000000000000',
       currentExposure: '200000000000',
-      quoteToken: 'BNB',
+      quoteToken: appConfig.token.gas_symbol,
       priceVsQuote: '1.0000',
     },
   ];

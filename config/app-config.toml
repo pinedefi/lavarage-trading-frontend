@@ -1,0 +1,12 @@
+[network]
+name = "BSC"
+rpc = "https://bsc-dataseed1.binance.org/"
+
+[branding]
+logo = "/logo.svg"
+
+[api]
+base_url = "https://api.lavarage.com/api/sdk/v1.0"
+
+[token]
+gas_symbol = "BNB"

@@ -4,6 +4,7 @@
   import { blockchain } from '$lib/stores/blockchain';
   import { currentMarket } from '$lib/stores/markets';
   import type { TokenModel } from '$lib/services/offers';
+  import { appConfig } from '$lib/config/appConfig';
 
   export let height: number = 400;
   export let symbol: string = '';
@@ -16,13 +17,13 @@
 
   // Get token addresses from current market
   $: baseToken = $currentMarket?.collateralToken?.symbol || 'Unknown';
-  $: quoteToken = typeof $currentMarket?.quoteToken === 'string' 
-    ? 'BNB'
-    : $currentMarket?.quoteToken?.symbol || 'BNB';
+  $: quoteToken = typeof $currentMarket?.quoteToken === 'string'
+    ? appConfig.token.gas_symbol
+    : $currentMarket?.quoteToken?.symbol || appConfig.token.gas_symbol;
   
   $: baseAddress = $currentMarket?.collateralToken?.address || '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
   $: quoteAddress = typeof $currentMarket?.quoteToken === 'string'
-    ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' // Default BNB address
+    ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' // Default gas token address
     : $currentMarket?.quoteToken?.address || '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 
   // Only reload chart if token addresses have changed

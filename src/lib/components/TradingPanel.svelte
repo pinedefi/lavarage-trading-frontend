@@ -12,6 +12,7 @@
   import { getAccount } from '@wagmi/core';
   import { config } from '$lib/config/wagmi';
   import { bsc } from '@wagmi/core/chains';
+  import { appConfig } from '$lib/config/appConfig';
   
   let collateral = 0.1;
   let leverage = 1.2;
@@ -71,7 +72,7 @@
         return true;
       } catch (error) {
         console.error('Failed to switch network:', error);
-        alert('Please switch to BSC network in your wallet');
+        alert(`Please switch to ${appConfig.network.name} network in your wallet`);
         return false;
       } finally {
         switchingNetwork = false;
@@ -81,7 +82,7 @@
   }
 
   $: currentMarket = markets.find(m => m.symbol === $selectedMarketStore) || markets[0];
-  $: tokenSymbol = $selectedMarketStore?.split('-')[0] || 'BNB';
+  $: tokenSymbol = $selectedMarketStore?.split('-')[0] || appConfig.token.gas_symbol;
   $: currentPrice = currentMarket?.price || 0;
   $: positionSize = collateral * leverage;
   $: liquidationPrice = currentPrice * (1 - 1/leverage * 0.9); // Simplified calculation
@@ -165,7 +166,7 @@
   <div class="space-y-6">
     <div>
       <label for="collateral-input" class="block text-sm font-medium text-gray-300 mb-2">
-        Collateral (BNB)
+        Collateral ({appConfig.token.gas_symbol})
       </label>
       <input
         id="collateral-input"
@@ -226,7 +227,7 @@
     <div class="space-y-3 p-4 bg-white/5 rounded-lg">
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Position Size</span>
-        <span class="font-mono">{positionSize.toFixed(4)} BNB</span>
+        <span class="font-mono">{positionSize.toFixed(4)} {appConfig.token.gas_symbol}</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Entry Price</span>
@@ -238,7 +239,7 @@
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Est. Fees</span>
-        <span class="font-mono">-{(collateral * 0.0085).toFixed(4)} BNB</span>
+        <span class="font-mono">-{(collateral * 0.0085).toFixed(4)} {appConfig.token.gas_symbol}</span>
       </div>
     </div>
     

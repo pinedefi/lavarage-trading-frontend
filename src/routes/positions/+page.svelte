@@ -8,6 +8,7 @@
     startPositionsUpdates
   } from '$lib/stores/positions';
   import { formatNumber } from '$lib/utils/formatters';
+  import { appConfig } from '$lib/config/appConfig';
   import PositionCard from '$lib/components/PositionCard.svelte';
   import { Activity, TrendingUp, DollarSign, AlertCircle } from 'lucide-svelte';
 
@@ -76,10 +77,10 @@
       {#if !showClosed}
         <div class="card">
           <div class="flex items-center justify-between mb-2">
-            <p class="text-sm text-gray-400">Total Collateral (BNB)</p>
+            <p class="text-sm text-gray-400">Total Collateral ({appConfig.token.gas_symbol})</p>
             <DollarSign class="w-4 h-4 text-purple-400" />
           </div>
-          <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} BNB</p>
+          <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} {appConfig.token.gas_symbol}</p>
         </div>
       {/if}
       
@@ -89,7 +90,7 @@
           <TrendingUp class="w-4 h-4 {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? 'text-green-400' : 'text-red-400'}" />
         </div>
         <p class="text-2xl font-mono font-semibold {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? '+' : ''}{formatNumber(showClosed ? totalClosedPnL : $totalPnL, 4)} BNB
+          {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? '+' : ''}{formatNumber(showClosed ? totalClosedPnL : $totalPnL, 4)} {appConfig.token.gas_symbol}
         </p>
       </div>
       
@@ -99,7 +100,7 @@
             <p class="text-sm text-gray-400">Total Equity</p>
             <Activity class="w-4 h-4 text-orange-400" />
           </div>
-          <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)} BNB</p>
+          <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)} {appConfig.token.gas_symbol}</p>
         </div>
       {/if}
       

@@ -8,6 +8,7 @@
   import { blockchain } from '$lib/stores/blockchain';
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
   import { markets, selectedMarket, currentMarket, loading, startUpdates, stopUpdates } from '$lib/stores/markets';
+  import { appConfig } from '$lib/config/appConfig';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { Info, Shield, TrendingUp } from 'lucide-svelte';
@@ -130,7 +131,7 @@
             </div>
             <!-- <div class="flex justify-between">
               <span class="text-gray-400">Min Position</span>
-              <span class="font-mono">{minPosition} BNB</span>
+              <span class="font-mono">{minPosition} {appConfig.token.gas_symbol}</span>
             </div> -->
           </div>
         </div>

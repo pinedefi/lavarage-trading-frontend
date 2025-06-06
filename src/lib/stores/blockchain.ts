@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { appConfig } from '$lib/config/appConfig';
 
 export type SupportedBlockchain = 'bsc' | 'solana' | 'sui';
 
@@ -20,11 +21,11 @@ export interface BlockchainConfig {
 export const blockchainConfigs: Record<SupportedBlockchain, BlockchainConfig> = {
   bsc: {
     id: 'bsc',
-    name: 'BSC',
-    symbol: 'BNB',
+    name: appConfig.network.name,
+    symbol: appConfig.token.gas_symbol,
     decimals: 18,
     chainId: 56,
-    rpcUrl: 'https://bsc-dataseed1.binance.org/',
+    rpcUrl: appConfig.network.rpc,
     explorerUrl: 'https://bscscan.com',
     testnet: {
       chainId: 97,

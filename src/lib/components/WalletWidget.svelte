@@ -6,6 +6,7 @@
   import { config } from '$lib/config/wagmi';
   import { Wallet, X, ChevronDown } from 'lucide-svelte';
   import { portal } from '$lib/utils/portal';
+  import { appConfig } from '$lib/config/appConfig';
 
   let showModal = false;
   let connectingConnector: string | null = null;
@@ -20,7 +21,7 @@
         
         connectors = [
           { connector: metaMask(), name: 'MetaMask', icon: '🦊' },
-          { connector: coinbaseWallet({ appName: 'BSC Trading Platform' }), name: 'Coinbase Wallet', icon: '🔵' },
+          { connector: coinbaseWallet({ appName: `${appConfig.network.name} Trading Platform` }), name: 'Coinbase Wallet', icon: '🔵' },
           { connector: injected(), name: 'Browser Wallet', icon: '🌐' }
         ];
         
@@ -88,7 +89,7 @@
         <div class="wallet-info">
           <span class="wallet-address">{formatAddress($auth.user.walletAddress)}</span>
           {#if $auth.user.balance}
-            <span class="wallet-balance">{parseFloat($auth.user.balance).toFixed(4)} BNB</span>
+            <span class="wallet-balance">{parseFloat($auth.user.balance).toFixed(4)} {appConfig.token.gas_symbol}</span>
           {/if}
         </div>
         <Wallet size={16} />
@@ -141,7 +142,7 @@
         </div>
         
         <div class="modal-body">
-          <h3>Choose a wallet to connect to the BSC trading platform</h3>
+          <h3>Choose a wallet to connect to the {appConfig.network.name} trading platform</h3>
           <div class="wallet-options">
             {#if connectors.length > 0}
               {#each connectors as connectorData}

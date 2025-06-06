@@ -5,6 +5,7 @@
   import { formatNumber } from '$lib/utils/formatters';
   import { TrendingUp, Loader2 } from 'lucide-svelte';
   import { formatPrice } from '$lib/services/birdeye';
+  import { appConfig } from '$lib/config/appConfig';
   
   export let position: Position;
   
@@ -66,12 +67,12 @@
   <div class="grid grid-cols-2 gap-4 mb-4">
     <div>
       <p class="text-xs text-gray-400 mb-1">Entry Price</p>
-      <p class="font-mono font-medium">{formatPrice(position.entryPrice)} BNB</p>
+      <p class="font-mono font-medium">{formatPrice(position.entryPrice)} {appConfig.token.gas_symbol}</p>
     </div>
     
     <div>
       <p class="text-xs text-gray-400 mb-1">{position.status == 'closed' ? 'Closing' : 'Current'} Price</p>
-      <p class="font-mono font-medium">{formatPrice(position.status == 'closed' ? position.closingPositionSize / position.baseAmount : position.currentPrice)} BNB</p>
+      <p class="font-mono font-medium">{formatPrice(position.status == 'closed' ? position.closingPositionSize / position.baseAmount : position.currentPrice)} {appConfig.token.gas_symbol}</p>
     </div>
     
     <div>
@@ -81,7 +82,7 @@
     
     <div>
       <p class="text-xs text-gray-400 mb-1">Collateral</p>
-      <p class="font-mono font-medium">{formatNumber(position.collateral, 4)} BNB</p>
+      <p class="font-mono font-medium">{formatNumber(position.collateral, 4)} {appConfig.token.gas_symbol}</p>
     </div>
   </div>
   
@@ -90,7 +91,7 @@
       <div>
         <p class="text-xs text-gray-400 mb-1">PnL</p>
         <p class="font-mono text-lg font-semibold {position.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {position.pnl >= 0 ? '+' : ''}{formatNumber(position.pnl, 4)} BNB
+          {position.pnl >= 0 ? '+' : ''}{formatNumber(position.pnl, 4)} {appConfig.token.gas_symbol}
         </p>
       </div>
       

@@ -26,8 +26,10 @@ export const TRADING_CONSTANTS = {
 } as const;
 
 // API endpoints
+import { appConfig } from '$lib/config/appConfig';
+
 export const API_ENDPOINTS = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'https://api.lavarage.com/api/sdk/v1.0',
+  BASE_URL: appConfig.api.base_url,
   OFFERS: '/offers/v2',
   POSITIONS: '/positions/v3',
   OPEN_POSITION: '/positions/open',
