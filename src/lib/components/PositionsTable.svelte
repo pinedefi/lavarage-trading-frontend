@@ -52,7 +52,7 @@
             {p.pnl >= 0 ? '+' : ''}{p.pnl.toFixed(5)} {appConfig.token.gas_symbol}
           </td>
           <td class="px-3 py-2 font-mono">{p.asset}</td>
-          <td class="px-3 py-2 text-right font-mono">{p.size >= 0 ? formatNumber(p.size) : '--'}</td>
+          <td class="px-3 py-2 text-right font-mono">{p.size >= 0 ? formatNumber(p.size, 3) : '--'} {p.asset}</td>
           <td class="px-3 py-2 text-right font-mono">{formatPrice(p.entryPrice)} {appConfig.token.gas_symbol}</td>
           <td class="px-3 py-2 text-right font-mono">{formatPrice(p.currentPrice)} {appConfig.token.gas_symbol}</td>
           <td class="px-3 py-2 text-right font-mono">{p.leverage}x</td>
