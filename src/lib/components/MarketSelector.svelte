@@ -488,7 +488,6 @@
 
   .market-row.selected {
     background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-    border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
   }
 
   .market-info {
