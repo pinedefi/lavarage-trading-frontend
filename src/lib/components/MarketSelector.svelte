@@ -223,7 +223,7 @@
 
                 <div class="market-volume">
                   <div class="volume">{formatVolume(market.volume24h)}</div>
-                  <div class="apr">APR: {market.apr.toFixed(1)}%</div>
+                  <div class="apr">APR: {(market.apr * 100).toFixed(1)}%</div>
                 </div>
               </div>
             {/each}
@@ -327,7 +327,7 @@
   }
 
   .search-container:focus-within {
-    border-color: #8b5cf6;
+    border-color: var(--color-primary);
   }
 
   .search-input::placeholder {
@@ -357,8 +357,8 @@
   }
 
   .category-tab.active {
-    color: #8b5cf6;
-    border-bottom-color: #8b5cf6;
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
   }
 
   .market-list-header {
@@ -393,7 +393,7 @@
 
   .sort-indicator {
     font-size: 0.75rem;
-    color: #8b5cf6;
+    color: var(--color-primary);
   }
 
   .market-list {
@@ -431,7 +431,7 @@
   }
 
   .retry-button {
-    background: #8b5cf6;
+    background: var(--color-primary);
     border: none;
     color: white;
     padding: 0.5rem 1rem;
@@ -442,7 +442,7 @@
   }
 
   .retry-button:hover {
-    background: #7c3aed;
+    background: color-mix(in srgb, var(--color-primary) 80%, black);
   }
 
   .market-row {
@@ -460,8 +460,8 @@
   }
 
   .market-row.selected {
-    background: rgba(139, 92, 246, 0.1);
-    border-color: rgba(139, 92, 246, 0.2);
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
   }
 
   .market-info {
@@ -506,7 +506,7 @@
 
   .market-leverage {
     font-size: 0.6875rem;
-    color: rgba(139, 92, 246, 0.8);
+    color: color-mix(in srgb, var(--color-primary) 80%, white);
     font-weight: 500;
   }
 
@@ -537,11 +537,11 @@
   }
 
   .change.positive {
-    color: #10b981;
+    color: var(--color-accent-green);
   }
 
   .change.negative {
-    color: #ef4444;
+    color: var(--color-accent-red);
   }
 
   .market-volume {
