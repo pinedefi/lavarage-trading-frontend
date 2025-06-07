@@ -6,6 +6,7 @@
   import { config } from '$lib/config/wagmi';
   import { Wallet, X, ChevronDown } from 'lucide-svelte';
   import { portal } from '$lib/utils/portal';
+  import { appConfig } from '$lib/config/appConfig';
 
   let showModal = false;
   let connectingConnector: string | null = null;
@@ -20,7 +21,7 @@
         
         connectors = [
           { connector: metaMask(), name: 'MetaMask', icon: '🦊' },
-          { connector: coinbaseWallet({ appName: 'BSC Trading Platform' }), name: 'Coinbase Wallet', icon: '🔵' },
+          { connector: coinbaseWallet({ appName: `${appConfig.network.name} Trading Platform` }), name: 'Coinbase Wallet', icon: '🔵' },
           { connector: injected(), name: 'Browser Wallet', icon: '🌐' }
         ];
         
@@ -88,7 +89,7 @@
         <div class="wallet-info">
           <span class="wallet-address">{formatAddress($auth.user.walletAddress)}</span>
           {#if $auth.user.balance}
-            <span class="wallet-balance">{parseFloat($auth.user.balance).toFixed(4)} BNB</span>
+            <span class="wallet-balance">{parseFloat($auth.user.balance).toFixed(4)} {appConfig.token.gas_symbol}</span>
           {/if}
         </div>
         <Wallet size={16} />
@@ -141,7 +142,7 @@
         </div>
         
         <div class="modal-body">
-          <h3>Choose a wallet to connect to the BSC trading platform</h3>
+          <h3>Choose a wallet to connect to the {appConfig.network.name} trading platform</h3>
           <div class="wallet-options">
             {#if connectors.length > 0}
               {#each connectors as connectorData}
@@ -186,7 +187,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--primary);
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -199,7 +200,8 @@
 
   .wallet-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    filter: brightness(110%);
+    box-shadow: 0 4px 12px rgba(200, 150, 62, 0.4);
   }
 
   .wallet-button:disabled {
@@ -209,7 +211,7 @@
   }
 
   .wallet-button.connected {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    background-color: var(--accent-green);
     min-width: 200px;
   }
 
@@ -233,8 +235,8 @@
   .error-message {
     margin-top: 0.5rem;
     padding: 0.5rem;
-    background: #fee2e2;
-    color: #dc2626;
+    background-color: rgba(var(--accent-red), 0.1);
+    color: var(--accent-red);
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }

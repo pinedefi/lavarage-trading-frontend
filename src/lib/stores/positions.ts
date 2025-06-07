@@ -132,7 +132,7 @@ export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise
       baseAmount: Number(p.collateralAmount) / 10 ** p.token.decimals || 0,
       pnl: (Number(p.offers[0].priceVsQuote) - Number(p.openingPositionSize) / 1e18 / (Number(p.collateralAmount) / 10 ** p.token.decimals)) * Number(p.collateralAmount) / 10 ** p.token.decimals,
       pnlPercentage: (Number(p.offers[0].priceVsQuote) - Number(p.openingPositionSize) / 1e18 / (Number(p.collateralAmount) / 10 ** p.token.decimals)) * Number(p.collateralAmount) / 10 ** p.token.decimals / (Number(p.initialMargin) / 1e18) * 100, 
-      liquidationPrice: Number(Number(p.offers[0].priceVsQuote) * (1 - 1/(Number(p.openingPositionSize) / Number(p.initialMargin)) * 0.9)) || 0,
+      liquidationPrice: Number(Number(p.openingPositionSize) / 1e18 / (Number(p.collateralAmount) / 10 ** p.token.decimals) * (1 - 1/(Number(p.openingPositionSize) / Number(p.initialMargin)) * 0.9)) || 0,
       timestamp: p.openTimestamp ? Date.parse(p.openTimestamp) : Date.now(),
       status: p.status === 'active' ? 'open' : p.status === 'liquidated' ? 'liquidated' : 'closed',
       realizedPnL: (Number(p.closingPositionSize) / 1e18 - Number(p.openingPositionSize) / 1e18)  || 0,

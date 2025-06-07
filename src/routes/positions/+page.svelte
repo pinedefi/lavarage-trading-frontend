@@ -8,6 +8,7 @@
     startPositionsUpdates
   } from '$lib/stores/positions';
   import { formatNumber } from '$lib/utils/formatters';
+  import { appConfig } from '$lib/config/appConfig';
   import PositionCard from '$lib/components/PositionCard.svelte';
   import { Activity, TrendingUp, DollarSign, AlertCircle } from 'lucide-svelte';
 
@@ -57,29 +58,16 @@
       <h2 class="text-xl font-semibold mb-2">Connect Wallet to View Positions</h2>
       <p class="text-gray-400">Please connect your wallet to see your trading positions</p>
     </div>
-  {:else if (showClosed ? $closedPositions.length === 0 : $openPositions.length === 0)}
-    <div class="card text-center py-12">
-      <TrendingUp class="w-12 h-12 text-gray-500 mx-auto mb-4" />
-      <h2 class="text-xl font-semibold mb-2">No {showClosed ? 'Closed' : 'Open'} Positions</h2>
-      {#if showClosed}
-        <p class="text-gray-400">Your closed positions history will appear here</p>
-      {:else}
-        <p class="text-gray-400 mb-6">Start trading to see your positions here</p>
-        <a href="/trade" class="btn-primary inline-flex items-center gap-2">
-          <TrendingUp class="w-4 h-4" />
-          Open Position
-        </a>
-      {/if}
-    </div>
   {:else}
-    <div class="grid grid-cols-1 md:grid-cols-{showClosed ? '2' : '4'} gap-6">
+    <!-- Stats Grid - Always show when authenticated -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {#if !showClosed}
         <div class="card">
           <div class="flex items-center justify-between mb-2">
-            <p class="text-sm text-gray-400">Total Collateral (BNB)</p>
-            <DollarSign class="w-4 h-4 text-purple-400" />
+            <p class="text-sm text-gray-400">Total Collateral ({appConfig.token.gas_symbol})</p>
+            <DollarSign class="w-4 h-4 text-primary" />
           </div>
-          <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} BNB</p>
+          <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} {appConfig.token.gas_symbol}</p>
         </div>
       {/if}
       
@@ -89,7 +77,7 @@
           <TrendingUp class="w-4 h-4 {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? 'text-green-400' : 'text-red-400'}" />
         </div>
         <p class="text-2xl font-mono font-semibold {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? 'text-green-400' : 'text-red-400'}">
-          {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? '+' : ''}{formatNumber(showClosed ? totalClosedPnL : $totalPnL, 4)} BNB
+          {(showClosed ? totalClosedPnL : $totalPnL) >= 0 ? '+' : ''}{formatNumber(showClosed ? totalClosedPnL : $totalPnL, 4)} {appConfig.token.gas_symbol}
         </p>
       </div>
       
@@ -99,7 +87,7 @@
             <p class="text-sm text-gray-400">Total Equity</p>
             <Activity class="w-4 h-4 text-orange-400" />
           </div>
-          <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)} BNB</p>
+          <p class="text-2xl font-mono font-semibold">{formatNumber(totalEquity, 4)} {appConfig.token.gas_symbol}</p>
         </div>
       {/if}
       
@@ -113,30 +101,47 @@
         </p>
       </div>
     </div>
-    
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold">
-          {#if showClosed}
-            Closed Positions ({$closedPositions.length})
-          {:else}
-            Open Positions ({$openPositions.length})
-          {/if}
-        </h2>
-        <div class="flex items-center gap-2">
-          <button class="btn-secondary text-sm" on:click={toggleView}>
-            {showClosed ? 'View Open' : 'View Closed'}
-          </button>
+
+    <!-- Empty State or Positions List -->
+    {#if (showClosed ? $closedPositions.length === 0 : $openPositions.length === 0)}
+      <div class="card text-center py-12">
+        <TrendingUp class="w-12 h-12 text-gray-500 mx-auto mb-4" />
+        <h2 class="text-xl font-semibold mb-2">No {showClosed ? 'Closed' : 'Open'} Positions</h2>
+        {#if showClosed}
+          <p class="text-gray-400">Your closed positions history will appear here</p>
+        {:else}
+          <p class="text-gray-400 mb-6">Start trading to see your positions here</p>
+          <a href="/trade" class="btn-primary inline-flex items-center gap-2">
+            <TrendingUp class="w-4 h-4" />
+            Open Position
+          </a>
+        {/if}
+      </div>
+    {:else}
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">
+            {#if showClosed}
+              Closed Positions ({$closedPositions.length})
+            {:else}
+              Open Positions ({$openPositions.length})
+            {/if}
+          </h2>
+          <div class="flex items-center gap-2">
+            <button class="btn-secondary text-sm" on:click={toggleView}>
+              {showClosed ? 'View Open' : 'View Closed'}
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {#each positionsList as position (position.id)}
+            <div class="animate-fade-in">
+              <PositionCard {position} />
+            </div>
+          {/each}
         </div>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {#each positionsList as position (position.id)}
-          <div class="animate-fade-in">
-            <PositionCard {position} />
-          </div>
-        {/each}
-      </div>
-    </div>
+    {/if}
   {/if}
 </div>
