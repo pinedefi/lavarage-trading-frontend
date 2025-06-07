@@ -1,12 +1,25 @@
 [network]
-name = "BSC"
-rpc = "https://bsc-dataseed1.binance.org/"
+name = "BERACHAIN"
+rpc = "https://rpc.berachain.com/"
 
 [branding]
-logo = "/logo.svg"
+logo = "https://www.berachain.com/images/icons/logo_white.svg"
 
 [api]
-base_url = "https://api.lavarage.com/api/sdk/v1.0"
+base_url = "http://localhost:3000/api/sdk/v1.0"
 
 [token]
-gas_symbol = "BNB"
+gas_symbol = "BERA"
+
+[colors]
+# Primary brand color - Warm honey brown (representing bears)
+primary = "#C8963E"
+# Accent colors for different states
+accent_red = "#E85D4C"    # Warm sunset red
+accent_orange = "#F4A261"  # Golden hour orange
+accent_green = "#4A8C47"   # Fresh grass green
+# Background colors - Earth tones
+bg_dark = "#2C2520"       # Deep earth brown
+bg_card = "#3C332B"       # Light earth brown
+# Border colors - Natural stone
+border = "#4E443A"        # Weathered rock

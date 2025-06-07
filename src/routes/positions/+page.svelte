@@ -78,7 +78,7 @@
         <div class="card">
           <div class="flex items-center justify-between mb-2">
             <p class="text-sm text-gray-400">Total Collateral ({appConfig.token.gas_symbol})</p>
-            <DollarSign class="w-4 h-4 text-purple-400" />
+            <DollarSign class="w-4 h-4 text-primary" />
           </div>
           <p class="text-2xl font-mono font-semibold">{formatNumber($totalCollateral, 4)} {appConfig.token.gas_symbol}</p>
         </div>

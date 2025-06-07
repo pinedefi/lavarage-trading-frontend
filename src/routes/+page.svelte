@@ -19,7 +19,7 @@
       label: 'Total Collateral',
       value: $totalCollateral,
       icon: DollarSign,
-      color: 'purple',
+      color: 'primary',
       format: (v: number) => `${v.toFixed(4)} ${$blockchain.config.symbol}`
     },
     {
@@ -41,7 +41,7 @@
 
 <div class="max-w-6xl mx-auto space-y-8">
   <header class="text-center space-y-4 py-12">
-    <h1 class="text-5xl font-bold bg-gradient-to-r from-red-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+    <h1 class="text-5xl font-bold bg-gradient-to-r from-[#E85D4C] via-[#C8963E] to-[#F4A261] bg-clip-text text-transparent">
       Trade with Leverage
     </h1>
     <p class="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -71,9 +71,9 @@
   {/if}
   
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <a href="/trade" class="card hover:border-purple-500/50 transition-all duration-200 group">
-      <div class="p-4 bg-purple-500/20 rounded-lg mb-4 group-hover:bg-purple-500/30 transition-colors">
-        <TrendingUp class="w-8 h-8 text-purple-400" />
+    <a href="/trade" class="card hover:border-primary/50 transition-all duration-200 group">
+      <div class="p-4 bg-primary/20 rounded-lg mb-4 group-hover:bg-primary/30 transition-colors">
+        <TrendingUp class="w-8 h-8 text-primary" />
       </div>
       <h3 class="text-xl font-semibold mb-2">Long Positions</h3>
       <p class="text-gray-400">
@@ -111,7 +111,7 @@
   {#if !$isAuthenticated}
     <div class="text-center py-12">
       <div class="inline-flex flex-col items-center gap-4 p-8 glass rounded-2xl">
-        <Zap class="w-12 h-12 text-purple-400" />
+        <Zap class="w-12 h-12 text-primary" />
         <h2 class="text-2xl font-semibold">Ready to Start Trading?</h2>
         <p class="text-gray-400 max-w-md">
           Connect your wallet to access leveraged trading across multiple blockchains.

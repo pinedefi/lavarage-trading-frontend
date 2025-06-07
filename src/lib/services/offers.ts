@@ -36,6 +36,7 @@ export interface OfferEvmModel {
   active: boolean;
   account: OfferAccount;
   priceVsQuote: string;
+  pairAddress: string;
 }
 
 export interface MarketData {
@@ -57,6 +58,7 @@ export interface MarketData {
   collateralToken?: TokenModel;
   quoteToken: TokenModel | string;
   priceVsQuote: string;
+  pairAddress: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ng-api.lavarave.wtf/api/sdk/v1.0';
@@ -140,6 +142,7 @@ export function transformOfferToMarket(offer: OfferEvmModel): MarketData {
     collateralToken: offer.collateralToken,
     quoteToken: offer.quoteToken,
     priceVsQuote: offer.priceVsQuote,
+    pairAddress: offer.pairAddress,
   };
 }
 

@@ -187,7 +187,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--primary);
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -200,7 +200,8 @@
 
   .wallet-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    filter: brightness(110%);
+    box-shadow: 0 4px 12px rgba(200, 150, 62, 0.4);
   }
 
   .wallet-button:disabled {
@@ -210,7 +211,7 @@
   }
 
   .wallet-button.connected {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    background-color: var(--accent-green);
     min-width: 200px;
   }
 
@@ -234,8 +235,8 @@
   .error-message {
     margin-top: 0.5rem;
     padding: 0.5rem;
-    background: #fee2e2;
-    color: #dc2626;
+    background-color: rgba(var(--accent-red), 0.1);
+    color: var(--accent-red);
     border-radius: 0.375rem;
     font-size: 0.875rem;
   }

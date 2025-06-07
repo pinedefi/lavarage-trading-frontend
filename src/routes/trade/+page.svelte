@@ -100,7 +100,7 @@
       
       <div class="card space-y-4">
         <h2 class="text-lg font-semibold flex items-center gap-2">
-          <Info class="w-5 h-5 text-purple-400" />
+          <Info class="w-5 h-5 text-primary" />
           Trading Information
         </h2>
         
@@ -170,7 +170,7 @@
             Active Positions
           </h3>
           <p class="text-2xl font-mono font-semibold">{$openPositions.length}</p>
-          <a href="/positions" class="text-sm text-purple-400 hover:text-purple-300 mt-2 inline-block">
+          <a href="/positions" class="text-sm text-primary hover:text-primary/80 mt-2 inline-block">
             View all positions →
           </a>
         </div>

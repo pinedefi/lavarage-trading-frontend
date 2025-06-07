@@ -5,12 +5,14 @@
 
 @layer base {
   :root {
-    --primary: 280 100% 70%;
-    --accent-red: 0 84% 60%;
-    --accent-orange: 25 95% 53%;
-    --bg-dark: 0 0% 4%;
-    --bg-card: 0 0% 8%;
-    --border: 0 0% 15%;
+    /* These CSS variables will be updated by JavaScript */
+    --primary: rgb(200 150 62);
+    --accent-red: rgb(232 93 76);
+    --accent-orange: rgb(244 162 97);
+    --accent-green: rgb(74 140 71);
+    --bg-dark: rgb(44 37 32);
+    --bg-card: rgb(60 51 43);
+    --border: rgb(78 68 58);
   }
 
   * {
@@ -18,7 +20,9 @@
   }
 
   body {
-    @apply bg-black text-gray-100 font-sans;
+    background-color: var(--bg-dark);
+    color: rgb(243 244 246);
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   .font-mono {
@@ -28,7 +32,9 @@
 
 @layer components {
   .glass {
-    @apply bg-black/80 backdrop-blur-sm border border-white/10;
+    background-color: rgba(var(--bg-card), 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .glass-hover {
@@ -37,14 +43,20 @@
 
   .gradient-border {
     @apply relative;
-    background: linear-gradient(#000, #000) padding-box,
-                linear-gradient(135deg, #ef4444, #a855f7, #f97316) border-box;
+    background: linear-gradient(var(--bg-dark), var(--bg-dark)) padding-box,
+                linear-gradient(135deg, var(--accent-red), var(--primary), var(--accent-orange)) border-box;
     border: 1px solid transparent;
   }
 
   .btn-primary {
-    @apply px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-all duration-200;
-    @apply shadow-lg shadow-purple-600/20 hover:shadow-purple-600/40;
+    @apply px-6 py-3 text-white font-medium rounded-lg transition-all duration-200;
+    background-color: var(--primary);
+    box-shadow: 0 10px 15px -3px rgba(200, 150, 62, 0.2);
+  }
+  
+  .btn-primary:hover {
+    filter: brightness(110%);
+    box-shadow: 0 10px 15px -3px rgba(200, 150, 62, 0.4);
   }
 
   .btn-secondary {
@@ -52,26 +64,37 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg;
-    @apply focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20;
+    @apply w-full px-4 py-3 rounded-lg;
     @apply placeholder-gray-500 text-white;
+    background-color: rgba(var(--bg-card), 0.5);
+    border: 1px solid var(--border);
+  }
+  
+  .input-field:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(200, 150, 62, 0.2);
   }
 
   .card {
-    @apply glass rounded-xl p-6 space-y-4;
+    @apply rounded-xl p-6 space-y-4;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
   }
 
   .position-long {
-    @apply border-l-4 border-green-500;
+    border-left: 4px solid var(--accent-green);
   }
 
   .position-short {
-    @apply border-l-4 border-red-500;
+    border-left: 4px solid var(--accent-red);
   }
 
   .leverage-badge {
     @apply inline-flex items-center px-2 py-1 text-xs font-mono font-medium rounded-md;
-    @apply bg-orange-500/20 text-orange-400 border border-orange-500/30;
+    background-color: rgba(244, 162, 97, 0.2);
+    color: var(--accent-orange);
+    border: 1px solid rgba(244, 162, 97, 0.3);
   }
 
   @keyframes pulse-glow {

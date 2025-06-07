@@ -76,13 +76,19 @@
       iframe.style.borderRadius = '8px';
       iframe.allow = 'clipboard-write';
       iframe.loading = 'lazy';
+      iframe.title = 'DEXTools Trading Chart';
       
       // Clear container and add iframe
       chartContainer.innerHTML = '';
       chartContainer.appendChild(iframe);
 
+      //<iframe id="dextools-widget"
+    // title="DEXTools Trading Chart"
+    // width="500" height="400"
+    // src="https://www.dextools.io/widget-chart/en/berachain/pe-light/0xe454c546c8f3875e928910abc653de5f8c432f11?theme=light&chartType=2&chartResolution=30&drawingToolbars=false"></iframe>
+
       // Set src after all other properties and handlers are set
-      iframe.src = `https://birdeye.so/tv-widget/${baseAddress}/${quoteAddress}?chain=bsc&viewMode=base%2Fquote&chartInterval=15&chartType=Candle&chartTimezone=Etc%2FUTC&chartLeftToolbar=show&theme=dark`;
+      iframe.src = `https://www.dextools.io/widget-chart/en/berachain/pe-light/${$currentMarket?.pairAddress}?theme=light&chartType=2&chartResolution=30&drawingToolbars=false`
 
     } catch (e) {
       console.error('Chart loading error:', e);

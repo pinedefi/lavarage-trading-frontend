@@ -41,7 +41,7 @@ export async function loadMarkets() {
 }
 
 // Function to start periodic updates
-export function startUpdates(interval = 5000) {
+export function startUpdates(interval = 30000) {
   if (browser) {
     loadMarkets();
     updateInterval = setInterval(loadMarkets, interval);
