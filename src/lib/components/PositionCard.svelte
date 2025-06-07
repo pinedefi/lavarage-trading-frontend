@@ -37,7 +37,7 @@
   <div class="flex items-start justify-between mb-4">
     <div class="flex items-center gap-3">
       <div class="p-2 bg-green-500/20 rounded-lg">
-        <TrendingUp class="w-4 h-4 text-green-400" />
+        <TrendingUp class="w-4 h-4 text-[var(--accent-green)]" />
       </div>
       <div>
         <div class="flex items-center gap-2">
@@ -90,14 +90,14 @@
     <div class="flex items-center justify-between">
       <div>
         <p class="text-xs text-gray-400 mb-1">PnL</p>
-        <p class="font-mono text-lg font-semibold {position.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">
+        <p class="font-mono text-lg font-semibold {position.pnl >= 0 ? 'text-[var(--accent-green)]' : 'text-red-400'}">
           {position.pnl >= 0 ? '+' : ''}{formatNumber(position.pnl, 4)} {appConfig.token.gas_symbol}
         </p>
       </div>
       
       <div class="text-right">
         <p class="text-xs text-gray-400 mb-1">ROI</p>
-        <p class="font-mono text-lg font-semibold {position.pnlPercentage >= 0 ? 'text-green-400' : 'text-red-400'}">
+        <p class="font-mono text-lg font-semibold {position.pnlPercentage >= 0 ? 'text-[var(--accent-green)]' : 'text-red-400'}">
           {position.pnlPercentage >= 0 ? '+' : ''}{formatNumber(position.pnlPercentage, 2)}%
         </p>
       </div>

@@ -48,7 +48,7 @@
               {closing[p.loanId] ? 'Closing...' : 'Close'}
             </button>
           </td>
-          <td class="px-3 py-2 text-right font-mono {p.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">
+          <td class="px-3 py-2 text-right font-mono {p.pnl >= 0 ? 'text-[var(--accent-green)]' : 'text-red-400'}">
             {p.pnl >= 0 ? '+' : ''}{p.pnl.toFixed(5)} {appConfig.token.gas_symbol}
           </td>
           <td class="px-3 py-2 font-mono">{p.asset}</td>

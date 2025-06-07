@@ -69,7 +69,7 @@ export function formatPnL(pnl: number, symbol: string): {
   color: string;
 } {
   const formatted = `${pnl >= 0 ? '+' : ''}${formatNumber(pnl, 4)} ${symbol}`;
-  const color = pnl >= 0 ? 'text-green-400' : 'text-red-400';
+  const color = pnl >= 0 ? 'text-[var(--accent-green)]' : 'text-red-400';
   return { text: formatted, color };
 }
 

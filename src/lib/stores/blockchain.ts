@@ -24,12 +24,12 @@ export const blockchainConfigs: Record<SupportedBlockchain, BlockchainConfig> = 
     name: appConfig.network.name,
     symbol: appConfig.token.gas_symbol,
     decimals: 18,
-    chainId: 56,
+    chainId: appConfig.network.chain_id,
     rpcUrl: appConfig.network.rpc,
     explorerUrl: 'https://bscscan.com',
     testnet: {
-      chainId: 97,
-      rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      chainId: appConfig.network.testnet_chain_id,
+      rpcUrl: appConfig.network.rpc,
       explorerUrl: 'https://testnet.bscscan.com'
     }
   },

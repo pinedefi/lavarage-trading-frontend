@@ -111,7 +111,7 @@ export function formatPrice(price: number): string {
 // Format price change percentage
 export function formatPriceChange(change: number): { text: string; color: string } {
   const formatted = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-  const color = change >= 0 ? 'text-green-400' : 'text-red-400';
+  const color: string = change >= 0 ? 'text-[var(--accent-green)]' : 'text-red-400';
   return { text: formatted, color };
 }
 

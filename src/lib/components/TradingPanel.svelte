@@ -11,7 +11,7 @@
   import { switchNetwork } from '$lib/services/wallet';
   import { getAccount } from '@wagmi/core';
   import { config } from '$lib/config/wagmi';
-  import { bsc } from '@wagmi/core/chains';
+  import { berachain } from '$lib/config/wagmi';
   import { appConfig } from '$lib/config/appConfig';
   
   let collateral = 0.1;
@@ -65,10 +65,10 @@
 
   async function ensureCorrectNetwork(): Promise<boolean> {
     const account = getAccount(config);
-    if (account.chainId !== bsc.id) {
+    if (account.chainId !== berachain.id) {
       try {
         switchingNetwork = true;
-        await switchNetwork(bsc.id);
+        await switchNetwork(berachain.id);
         return true;
       } catch (error) {
         console.error('Failed to switch network:', error);

@@ -1,6 +1,8 @@
 [network]
 name = "BERACHAIN"
 rpc = "https://rpc.berachain.com/"
+chain_id = 80094
+testnet_chain_id = 80094  # Using same ID for testnet currently
 
 [branding]
 logo = "https://www.berachain.com/images/icons/logo_white.svg"

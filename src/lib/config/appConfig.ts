@@ -5,6 +5,8 @@ export interface AppConfig {
   network: {
     name: string;
     rpc: string;
+    chain_id: number;
+    testnet_chain_id: number;
   };
   branding: {
     logo: string;
@@ -33,6 +35,8 @@ const parsedConfig = parse(rawConfig) as unknown as AppConfig;
 const requiredKeys = {
   'network.name': parsedConfig.network?.name,
   'network.rpc': parsedConfig.network?.rpc,
+  'network.chain_id': parsedConfig.network?.chain_id,
+  'network.testnet_chain_id': parsedConfig.network?.testnet_chain_id,
   'branding.logo': parsedConfig.branding?.logo,
   'api.base_url': parsedConfig.api?.base_url,
   'token.gas_symbol': parsedConfig.token?.gas_symbol,

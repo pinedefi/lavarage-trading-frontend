@@ -1,14 +1,14 @@
 // Blockchain configurations
 export const CHAIN_IDS = {
-  BSC: 56,
-  BSC_TESTNET: 97,
+  BSC: 80085, // BERACHAIN chain ID
+  BSC_TESTNET: 80085, // BERACHAIN testnet chain ID (using same for now)
   SOLANA: 101,
   SUI: 1
 };
 
 export const CHAIN_NAMES = {
-  [CHAIN_IDS.BSC]: 'BSC',
-  [CHAIN_IDS.BSC_TESTNET]: 'BSC Testnet',
+  [CHAIN_IDS.BSC]: 'BERACHAIN',
+  [CHAIN_IDS.BSC_TESTNET]: 'BERACHAIN Testnet',
   [CHAIN_IDS.SOLANA]: 'Solana',
   [CHAIN_IDS.SUI]: 'Sui'
 };

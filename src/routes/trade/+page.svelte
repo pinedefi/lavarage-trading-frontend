@@ -112,7 +112,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Interest / Day</span>
-              <span class="font-mono text-green-400">{interestPerDay}</span>
+              <span class="font-mono text-[var(--accent-green)]">{interestPerDay}</span>
             </div>
             <!-- <div class="flex justify-between">
               <span class="text-gray-400">Open Interest</span>
