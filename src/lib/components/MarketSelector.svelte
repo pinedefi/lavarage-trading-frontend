@@ -4,6 +4,7 @@
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
   import { markets, selectedMarket, loading } from '$lib/stores/markets';
   import type { MarketData } from '$lib/services/offers';
+  import { onMount } from 'svelte';
 
   const dispatch = createEventDispatcher<{
     select: MarketData;
@@ -15,6 +16,22 @@
   let selectedCategory = 'all';
   let sortBy = 'volume';
   let sortDirection = 'desc';
+  let favoriteSymbols = new Set<string>();
+
+  // Load favorites from localStorage on mount
+  onMount(() => {
+    const savedFavorites = localStorage.getItem('marketFavorites');
+    if (savedFavorites) {
+      favoriteSymbols = new Set(JSON.parse(savedFavorites));
+      // Update the markets store with favorite status
+      markets.update((markets: MarketData[]) => 
+        markets.map((market: MarketData) => ({
+          ...market,
+          isFavorite: favoriteSymbols.has(market.symbol)
+        }))
+      );
+    }
+  });
 
   const categories = [
     { id: 'all', label: 'All' },
@@ -37,7 +54,7 @@
     .filter(market => {
       // Filter by category
       if (selectedCategory === 'all') return true;
-      if (selectedCategory === 'favorites') return market.isFavorite;
+      if (selectedCategory === 'favorites') return favoriteSymbols.has(market.symbol);
       return market.category === selectedCategory;
     })
     .sort((a, b) => {
@@ -73,8 +90,18 @@
   }
 
   function toggleFavorite(market: MarketData) {
-    market.isFavorite = !market.isFavorite;
-    markets.set($markets); // Trigger reactivity
+    if (favoriteSymbols.has(market.symbol)) {
+      favoriteSymbols.delete(market.symbol);
+    } else {
+      favoriteSymbols.add(market.symbol);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('marketFavorites', JSON.stringify(Array.from(favoriteSymbols)));
+    
+    // Update the market's favorite status
+    market.isFavorite = favoriteSymbols.has(market.symbol);
+    markets.update((m: MarketData[]) => m); // Trigger reactivity
   }
 
   function setSortBy(field: string) {
