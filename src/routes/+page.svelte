@@ -42,7 +42,7 @@
 <div class="max-w-6xl mx-auto space-y-8">
   <header class="text-center space-y-4 py-12">
     <h1 class="text-5xl font-bold bg-gradient-to-r from-[#E85D4C] via-[#C8963E] to-[#F4A261] bg-clip-text text-transparent">
-      Trade with Leverage
+      Hold my beer 🍺
     </h1>
     <p class="text-xl text-gray-400 max-w-2xl mx-auto">
       Professional crypto trading platform with up to 100x leverage. 
