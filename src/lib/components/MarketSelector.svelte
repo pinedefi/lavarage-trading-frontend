@@ -18,20 +18,23 @@
   let sortDirection = 'desc';
   let favoriteSymbols = new Set<string>();
 
-  // Load favorites from localStorage on mount
+  // Load favorites from localStorage and sync with markets when they change
   onMount(() => {
     const savedFavorites = localStorage.getItem('marketFavorites');
     if (savedFavorites) {
       favoriteSymbols = new Set(JSON.parse(savedFavorites));
-      // Update the markets store with favorite status
-      markets.update((markets: MarketData[]) => 
-        markets.map((market: MarketData) => ({
-          ...market,
-          isFavorite: favoriteSymbols.has(market.symbol)
-        }))
-      );
     }
   });
+
+  // Reactive statement to sync favorites with markets whenever markets change
+  $: if ($markets) {
+    markets.update((markets: MarketData[]) => 
+      markets.map((market: MarketData) => ({
+        ...market,
+        isFavorite: favoriteSymbols.has(market.symbol)
+      }))
+    );
+  }
 
   const categories = [
     { id: 'all', label: 'All' },
@@ -42,7 +45,7 @@
   ];
 
   $: filteredMarkets = $markets
-    .filter(market => {
+    .filter((market: MarketData) => {
       // Filter by search query
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
@@ -51,13 +54,13 @@
       }
       return true;
     })
-    .filter(market => {
+    .filter((market: MarketData) => {
       // Filter by category
       if (selectedCategory === 'all') return true;
       if (selectedCategory === 'favorites') return favoriteSymbols.has(market.symbol);
       return market.category === selectedCategory;
     })
-    .sort((a, b) => {
+    .sort((a: MarketData, b: MarketData) => {
       // Sort markets
       let aValue: number, bValue: number;
       
