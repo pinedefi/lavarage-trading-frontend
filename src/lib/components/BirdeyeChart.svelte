@@ -21,10 +21,10 @@
     ? appConfig.token.gas_symbol
     : $currentMarket?.quoteToken?.symbol || appConfig.token.gas_symbol;
   
-  $: baseAddress = $currentMarket?.collateralToken?.address || '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+  $: baseAddress = $currentMarket?.collateralToken?.address || appConfig.token.gas_token_address;
   $: quoteAddress = typeof $currentMarket?.quoteToken === 'string'
-    ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' // Default gas token address
-    : $currentMarket?.quoteToken?.address || '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
+    ? appConfig.token.gas_token_address // Default gas token address
+    : $currentMarket?.quoteToken?.address || appConfig.token.gas_token_address;
 
   // Only reload chart if token addresses have changed
   $: if (browser && chartContainer && $currentMarket && (baseAddress !== prevBaseAddress || quoteAddress !== prevQuoteAddress)) {
