@@ -11,7 +11,8 @@
   import { switchNetwork } from '$lib/services/wallet';
   import { getAccount } from '@wagmi/core';
   import { config } from '$lib/config/wagmi';
-  import { bsc } from '@wagmi/core/chains';
+  import { berachain } from '$lib/config/wagmi';
+  import { appConfig } from '$lib/config/appConfig';
   
   let collateral = 0.1;
   let leverage = 1.2;
@@ -64,14 +65,14 @@
 
   async function ensureCorrectNetwork(): Promise<boolean> {
     const account = getAccount(config);
-    if (account.chainId !== bsc.id) {
+    if (account.chainId !== berachain.id) {
       try {
         switchingNetwork = true;
-        await switchNetwork(bsc.id);
+        await switchNetwork(berachain.id);
         return true;
       } catch (error) {
         console.error('Failed to switch network:', error);
-        alert('Please switch to BSC network in your wallet');
+        alert(`Please switch to ${appConfig.network.name} network in your wallet`);
         return false;
       } finally {
         switchingNetwork = false;
@@ -81,7 +82,7 @@
   }
 
   $: currentMarket = markets.find(m => m.symbol === $selectedMarketStore) || markets[0];
-  $: tokenSymbol = $selectedMarketStore?.split('-')[0] || 'BNB';
+  $: tokenSymbol = $selectedMarketStore?.split('-')[0] || appConfig.token.gas_symbol;
   $: currentPrice = currentMarket?.price || 0;
   $: positionSize = collateral * leverage;
   $: liquidationPrice = currentPrice * (1 - 1/leverage * 0.9); // Simplified calculation
@@ -158,14 +159,14 @@
 
 <div class="card">
   <h2 class="text-xl font-semibold mb-6 flex items-center gap-2 leading-none">
-    <TrendingUp class="w-5 h-5 text-purple-400 flex-shrink-0" strokeWidth={2} />
+    <TrendingUp class="w-5 h-5 text-primary flex-shrink-0" strokeWidth={2} />
     <span>Open Long Position</span>
   </h2>
   
   <div class="space-y-6">
     <div>
       <label for="collateral-input" class="block text-sm font-medium text-gray-300 mb-2">
-        Collateral (BNB)
+        Collateral ({appConfig.token.gas_symbol})
       </label>
       <input
         id="collateral-input"
@@ -183,40 +184,59 @@
       <label for="leverage-input" class="block text-sm font-medium text-gray-300 mb-2">
         Leverage: {leverage}x (Max {maxLeverage}x)
       </label>
-      <input
-        id="leverage-input"
-        type="range"
-        bind:value={leverage}
-        min="1"
-        max={maxLeverage}
-        step="0.1"
-        class="w-full h-2 bg-white/5 rounded-full appearance-none cursor-pointer
-          [&::-webkit-slider-thumb]:appearance-none
-          [&::-webkit-slider-thumb]:w-4
-          [&::-webkit-slider-thumb]:h-4
-          [&::-webkit-slider-thumb]:rounded-full
-          [&::-webkit-slider-thumb]:bg-purple-500
-          [&::-webkit-slider-thumb]:shadow-lg
-          [&::-webkit-slider-thumb]:shadow-purple-500/20
-          [&::-webkit-slider-thumb]:cursor-pointer
-          [&::-webkit-slider-thumb]:transition-all
-          [&::-webkit-slider-thumb]:duration-200
-          [&::-webkit-slider-thumb]:hover:scale-110
-          [&::-moz-range-thumb]:w-4
-          [&::-moz-range-thumb]:h-4
-          [&::-moz-range-thumb]:rounded-full
-          [&::-moz-range-thumb]:bg-purple-500
-          [&::-moz-range-thumb]:shadow-lg
-          [&::-moz-range-thumb]:shadow-purple-500/20
-          [&::-moz-range-thumb]:border-none
-          [&::-moz-range-thumb]:cursor-pointer
-          [&::-moz-range-thumb]:transition-all
-          [&::-moz-range-thumb]:duration-200
-          [&::-moz-range-thumb]:hover:scale-110
-          [&::-moz-range-progress]:bg-purple-500/50
-          [&::-moz-range-track]:bg-white/5
-          [&::-moz-range-track]:rounded-full"
-      />
+      <div class="relative w-full h-2">
+        <input
+          id="leverage-input"
+          type="range"
+          min={1}
+          max={maxLeverage}
+          step={0.1}
+          bind:value={leverage}
+          style="
+            --thumb-color: var(--primary);
+            --track-color: rgb(55 65 81);
+            --track-fill: rgba(200, 150, 62, 0.5);
+          "
+          class="absolute w-full h-full appearance-none bg-transparent cursor-pointer
+            [&::-webkit-slider-runnable-track]:h-2
+            [&::-webkit-slider-runnable-track]:rounded-lg
+            [&::-webkit-slider-runnable-track]:bg-gray-700
+            
+            [&::-webkit-slider-thumb]:appearance-none
+            [&::-webkit-slider-thumb]:w-4
+            [&::-webkit-slider-thumb]:h-4
+            [&::-webkit-slider-thumb]:rounded-full
+            [&::-webkit-slider-thumb]:bg-[var(--thumb-color)]
+            [&::-webkit-slider-thumb]:mt-[-3px]
+            [&::-webkit-slider-thumb]:shadow-lg
+            [&::-webkit-slider-thumb]:shadow-[var(--thumb-color)]/20
+            [&::-webkit-slider-thumb]:cursor-pointer
+            [&::-webkit-slider-thumb]:transition-all
+            [&::-webkit-slider-thumb]:duration-150
+            [&::-webkit-slider-thumb]:hover:scale-125
+            [&::-webkit-slider-thumb]:border-0
+            
+            [&::-moz-range-track]:h-2
+            [&::-moz-range-track]:rounded-lg
+            [&::-moz-range-track]:bg-[var(--track-color)]
+            
+            [&::-moz-range-progress]:h-2
+            [&::-moz-range-progress]:rounded-l-lg
+            [&::-moz-range-progress]:bg-[var(--track-fill)]
+            
+            [&::-moz-range-thumb]:w-4
+            [&::-moz-range-thumb]:h-4
+            [&::-moz-range-thumb]:rounded-full
+            [&::-moz-range-thumb]:bg-[var(--thumb-color)]
+            [&::-moz-range-thumb]:border-0
+            [&::-moz-range-thumb]:shadow-lg
+            [&::-moz-range-thumb]:shadow-[var(--thumb-color)]/20
+            [&::-moz-range-thumb]:cursor-pointer
+            [&::-moz-range-thumb]:transition-all
+            [&::-moz-range-thumb]:duration-150
+            [&::-moz-range-thumb]:hover:scale-125"
+        />
+      </div>
       <div class="flex justify-between text-xs text-gray-500 mt-1">
         <span>1x</span>
         <span>{maxLeverage}x</span>
@@ -226,7 +246,7 @@
     <div class="space-y-3 p-4 bg-white/5 rounded-lg">
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Position Size</span>
-        <span class="font-mono">{positionSize.toFixed(4)} BNB</span>
+        <span class="font-mono">{positionSize.toFixed(4)} {appConfig.token.gas_symbol}</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Entry Price</span>
@@ -238,7 +258,7 @@
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-400">Est. Fees</span>
-        <span class="font-mono">-{(collateral * 0.0085).toFixed(4)} BNB</span>
+        <span class="font-mono">-{(collateral * 0.0085).toFixed(4)} {appConfig.token.gas_symbol}</span>
       </div>
     </div>
     

@@ -1,14 +1,14 @@
 // Blockchain configurations
 export const CHAIN_IDS = {
-  BSC: 56,
-  BSC_TESTNET: 97,
+  BSC: 80085, // BERACHAIN chain ID
+  BSC_TESTNET: 80085, // BERACHAIN testnet chain ID (using same for now)
   SOLANA: 101,
   SUI: 1
 };
 
 export const CHAIN_NAMES = {
-  [CHAIN_IDS.BSC]: 'BSC',
-  [CHAIN_IDS.BSC_TESTNET]: 'BSC Testnet',
+  [CHAIN_IDS.BSC]: 'BERACHAIN',
+  [CHAIN_IDS.BSC_TESTNET]: 'BERACHAIN Testnet',
   [CHAIN_IDS.SOLANA]: 'Solana',
   [CHAIN_IDS.SUI]: 'Sui'
 };
@@ -26,8 +26,10 @@ export const TRADING_CONSTANTS = {
 } as const;
 
 // API endpoints
+import { appConfig } from '$lib/config/appConfig';
+
 export const API_ENDPOINTS = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'https://api.lavarage.com/api/sdk/v1.0',
+  BASE_URL: appConfig.api.base_url,
   OFFERS: '/offers/v2',
   POSITIONS: '/positions/v3',
   OPEN_POSITION: '/positions/open',

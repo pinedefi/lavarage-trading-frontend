@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
+import { onMount, onDestroy } from 'svelte';
+import { browser } from '$app/environment';
+import { appConfig } from '$lib/config/appConfig';
 
   interface Ball {
     x: number;
@@ -30,13 +31,14 @@
     '#7EB6FF'
   ];
 
-  // Load BSC logo
-  function loadBscLogo() {
+  // Load logo from config
+  
+function loadLogo() {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = reject;
-      img.src = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxuczp4b2RtPSJodHRwOi8vd3d3LmNvcmVsLmNvbS9jb3JlbGRyYXcvb2RtLzIwMDMiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjUwMCAyNTAwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNTAwIDI1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRjBCOTBCO30KCS5zdDF7ZmlsbDpub25lO30KPC9zdHlsZT4KPGcgaWQ9IkxheWVyX3gwMDIwXzEiPgoJPGcgaWQ9Il8yMDgyNDIzOTQ4ODAwIj4KCQk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNNTgzLjMsMzg1LjRMMTI1MCwwbDY2Ni43LDM4NS40bC0yNTAsMTM1LjRMMTI1MCwyODEuMkw4MjIuOSw1MjAuOEw1ODMuMywzODUuNEw1ODMuMywzODUuNHogTTE5MDYuMiw4NjQuNiAgICBsLTIzOS42LTEzNS40TDEyNTAsOTY4LjhMODIyLjksNzI5LjJMNTgzLjMsODY0LjZ2MjgxLjNsNDE2LjcsMjM5LjZsMCw0ODkuNmwyMzkuNiwxNDUuOGwyMzkuNi0xNDUuOHYtNDc5LjJsNDE2LjctMjM5LjZWODY0LjYgICAgTDE5MDYuMiw4NjQuNkwxOTA2LjIsODY0LjZ6IE0xOTA2LjIsMTYzNS40di0yODEuMkwxNjY2LjcsMTUwMHYyNzAuOEwxOTA2LjIsMTYzNS40TDE5MDYuMiwxNjM1LjR6IE0yMDgzLjMsMTcyOS4ybC00MTYuNywyMzkuNiAgICBWMjI1MGw2NjYuNy0zODUuNHYtNzcwLjhsLTI1MCwxNTYuMlYxNzI5LjJ6IE0xODQzLjgsNjI1bDIzOS42LDE0NS44djI4MS4zbDIzOS42LTE0NS44VjYyNWwtMjM5LjYtMTQ1LjhMMTg0My44LDYyNUwxODQzLjgsNjI1eiAgICAgTTEwMDAsMjA3Mi45djI4MS4ybDIzOS42LDE0NS44bDIzOS42LTE0NS44di0yODEuMmwtMjM5LjYsMTQ1LjhMMTAwMCwyMDcyLjlMMTAwMCwyMDcyLjl6IE01ODMuMywxNjM1LjRsMjM5LjYsMTM1LjR2LTI4MS4yICAgIGwtMjM5LjYtMTQ1LjhWMTYzNS40TDU4My4zLDE2MzUuNHogTTEwMDAsNjI1bDIzOS42LDE0NS44bDI1MC0xNDUuOEwxMjUwLDQ3OS4yTDEwMDAsNjI1eiBNNDA2LjIsNzcwLjhsMjUwLTE0NS44bC0yNTAtMTQ1LjggICAgTDE2Ni43LDYyNXYyODEuMmwyMzkuNiwxNDUuOFY3NzAuOHogTTQwNi4yLDEyNTBsLTIzOS42LTE0NS44VjE4NzVsNjY2LjcsMzg1LjR2LTI4MS4ybC00MTYuNy0yMzkuNmwwLTQ4OS42SDQwNi4yTDQwNi4yLDEyNTB6Ij48L3BhdGg+CgkJPHJlY3QgeT0iMCIgY2xhc3M9InN0MSIgd2lkdGg9IjI1MDAiIGhlaWdodD0iMjUwMCI+PC9yZWN0PgoJPC9nPgo8L2c+Cjwvc3ZnPgo=';
+      img.src = appConfig.branding.logo;
     });
   }
 
@@ -192,7 +194,7 @@
       ctx.fill();
       ctx.closePath();
 
-      // Draw BSC logo on larger balls
+      // Draw logo on larger balls
       if (ball.radius > 25 && bscLogo) {
         ctx.save();
         ctx.translate(ball.x, ball.y);
@@ -252,9 +254,9 @@
     if (!browser) return;
     
     try {
-      bscLogo = await loadBscLogo() as HTMLImageElement;
+      bscLogo = await loadLogo() as HTMLImageElement;
     } catch (error) {
-      console.error('Failed to load BSC logo:', error);
+      console.error('Failed to load logo:', error);
     }
     
     updateCanvasSize();

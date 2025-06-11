@@ -2914,7 +2914,7 @@
               "quoteToken": {
                 "type": "string",
                 "description": "The token used for quoting the loan offer",
-                "example": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
+                "example": "0x6969696969696969696969696969696969696969"
               },
               "slippage": {
                 "type": "number",

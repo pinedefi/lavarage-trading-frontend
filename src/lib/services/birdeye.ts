@@ -1,5 +1,6 @@
 // Birdeye API service for BSC price data
 const BIRDEYE_API_BASE = 'https://public-api.birdeye.so';
+import { appConfig } from '$lib/config/appConfig';
 
 export interface TokenPrice {
   address: string;
@@ -23,7 +24,7 @@ export interface PriceResponse {
 
 // Token addresses for BSC
 export const BSC_TOKEN_ADDRESSES = {
-  'BNB': '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', // WBNB
+  [appConfig.token.gas_symbol]: appConfig.token.gas_token_address, // WBNB
   'USDT': '0x55d398326f99059fF775485246999027B3197955',
   'USDC': '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   'BUSD': '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
@@ -110,7 +111,7 @@ export function formatPrice(price: number): string {
 // Format price change percentage
 export function formatPriceChange(change: number): { text: string; color: string } {
   const formatted = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-  const color = change >= 0 ? 'text-green-400' : 'text-red-400';
+  const color: string = change >= 0 ? 'text-[var(--accent-green)]' : 'text-red-400';
   return { text: formatted, color };
 }
 
