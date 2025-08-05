@@ -102,6 +102,22 @@
       </div>
     </div>
 
+    <!-- Toggle Button -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">
+        {#if showClosed}
+          Closed Positions {$closedPositions.length ? `(${$closedPositions.length})` : ''}
+        {:else}
+          Open Positions {$openPositions.length ? `(${$openPositions.length})` : ''}
+        {/if}
+      </h2>
+      <div class="flex items-center gap-2">
+        <button class="btn-secondary text-sm" on:click={toggleView}>
+          {showClosed ? 'View Open' : 'View Closed'}
+        </button>
+      </div>
+    </div>
+
     <!-- Empty State or Positions List -->
     {#if (showClosed ? $closedPositions.length === 0 : $openPositions.length === 0)}
       <div class="card text-center py-12">
@@ -119,21 +135,6 @@
       </div>
     {:else}
       <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-semibold">
-            {#if showClosed}
-              Closed Positions ({$closedPositions.length})
-            {:else}
-              Open Positions ({$openPositions.length})
-            {/if}
-          </h2>
-          <div class="flex items-center gap-2">
-            <button class="btn-secondary text-sm" on:click={toggleView}>
-              {showClosed ? 'View Open' : 'View Closed'}
-            </button>
-          </div>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {#each positionsList as position (position.id)}
             <div class="animate-fade-in">

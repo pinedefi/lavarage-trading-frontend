@@ -25,7 +25,7 @@ export interface Position {
   liquidationPrice: number;
   timestamp: number;
   closingPositionSize: number;
-  status: 'open' | 'closed' | 'liquidated';
+  status: 'active' | 'closed' | 'liquidated';
 }
 
 interface PositionsState {
@@ -86,7 +86,7 @@ export const positions = createPositionsStore();
 
 export const openPositions = derived(
   positions,
-  ($positions) => $positions.positions.filter((p) => p.status === 'open')
+  ($positions) => $positions.positions.filter((p) => p.status === 'active')
 );
 
 export const closedPositions = derived(
