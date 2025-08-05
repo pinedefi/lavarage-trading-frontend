@@ -22,11 +22,11 @@
     <div class="flex items-center justify-between h-16">
       <a href="/" class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-lg gradient-border flex items-center justify-center">
-          <span class="text-xl font-bold bg-gradient-to-r from-red-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-            🌋
+          <span class="text-xl font-bold bg-gradient-to-r from-[#E85D4C] via-[#C8963E] to-[#F4A261] bg-clip-text text-transparent">
+            🍹
           </span>
         </div>
-        <span class="text-xl font-semibold">Lavarage</span>
+        <span class="text-xl font-semibold">Beverage</span>
       </a>
 
       <div class="hidden md:flex items-center gap-1">
@@ -35,7 +35,7 @@
             href={item.path}
             class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200
               {$page.url.pathname === item.path
-                ? 'bg-purple-600/20 text-purple-400'
+                ? 'bg-primary/20 text-primary'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'}"
           >
             <svelte:component this={item.icon} class="w-4 h-4" />
@@ -67,7 +67,7 @@
             href={item.path}
             class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200
               {$page.url.pathname === item.path
-                ? 'bg-purple-600/20 text-purple-400'
+                ? 'bg-primary/20 text-primary'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'}"
           >
             <svelte:component this={item.icon} class="w-4 h-4" />

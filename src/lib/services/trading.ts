@@ -4,6 +4,7 @@ import { getCurrentAccount } from "$lib/services/wallet";
 import { config } from "$lib/config/wagmi";
 import { sendTransaction, waitForTransactionReceipt } from "@wagmi/core";
 import { BSC_TOKEN_ADDRESSES } from "$lib/services/birdeye";
+import { appConfig } from '$lib/config/appConfig';
 
 export interface OpenPositionParams {
   blockchain: SupportedBlockchain;
@@ -100,7 +101,7 @@ export async function closePosition(positionId: number): Promise<string> {
   const body: CloseBscPositionDto = {
     loanId: Number(positionId),
     userPubKey: account.address,
-    quoteToken: BSC_TOKEN_ADDRESSES["BNB"],
+    quoteToken: BSC_TOKEN_ADDRESSES[appConfig.token.gas_symbol],
     slippage: 500,
   };
 

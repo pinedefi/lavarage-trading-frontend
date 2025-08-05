@@ -8,6 +8,7 @@
   import { blockchain } from '$lib/stores/blockchain';
   import { formatPrice, formatPriceChange, formatVolume } from '$lib/services/birdeye';
   import { markets, selectedMarket, currentMarket, loading, startUpdates, stopUpdates } from '$lib/stores/markets';
+  import { appConfig } from '$lib/config/appConfig';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { Info, Shield, TrendingUp } from 'lucide-svelte';
@@ -99,7 +100,7 @@
       
       <div class="card space-y-4">
         <h2 class="text-lg font-semibold flex items-center gap-2">
-          <Info class="w-5 h-5 text-purple-400" />
+          <Info class="w-5 h-5 text-primary" />
           Trading Information
         </h2>
         
@@ -111,7 +112,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Interest / Day</span>
-              <span class="font-mono text-green-400">{interestPerDay}</span>
+              <span class="font-mono text-[var(--accent-green)]">{interestPerDay}</span>
             </div>
             <!-- <div class="flex justify-between">
               <span class="text-gray-400">Open Interest</span>
@@ -130,7 +131,7 @@
             </div>
             <!-- <div class="flex justify-between">
               <span class="text-gray-400">Min Position</span>
-              <span class="font-mono">{minPosition} BNB</span>
+              <span class="font-mono">{minPosition} {appConfig.token.gas_symbol}</span>
             </div> -->
           </div>
         </div>
@@ -169,7 +170,7 @@
             Active Positions
           </h3>
           <p class="text-2xl font-mono font-semibold">{$openPositions.length}</p>
-          <a href="/positions" class="text-sm text-purple-400 hover:text-purple-300 mt-2 inline-block">
+          <a href="/positions" class="text-sm text-primary hover:text-primary/80 mt-2 inline-block">
             View all positions →
           </a>
         </div>

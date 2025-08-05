@@ -17,7 +17,7 @@
   }
   
   function getLeverageColor(leverage: number) {
-    if (leverage <= 10) return 'text-green-400';
+    if (leverage <= 10) return 'text-[var(--accent-green)]';
     if (leverage <= 25) return 'text-yellow-400';
     if (leverage <= 50) return 'text-orange-400';
     return 'text-red-400';

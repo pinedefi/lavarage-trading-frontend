@@ -4,11 +4,16 @@
   import { restoreWalletSession } from '$lib/services/wallet';
   import { isAuthenticated } from '$lib/stores/auth';
   import { startPositionsUpdates, stopPositionsUpdates } from '$lib/stores/positions';
+  import { applyThemeColors } from '$lib/utils/theme';
   import Nav from '$lib/components/Nav.svelte';
   import BouncingBalls from '../components/BouncingBalls.svelte';
 
   onMount(async () => {
     try {
+      // Apply theme colors
+      applyThemeColors();
+      
+      // Restore wallet session
       await restoreWalletSession();
       if ($isAuthenticated) startPositionsUpdates('open');
     } catch (e) {
@@ -35,7 +40,7 @@
     </div>
     <main class="container mx-auto px-4 py-8">
       {#if $$slots.default}
-        <div class="bg-black/80 backdrop-blur-sm rounded-lg p-4">
+        <div class="">
           <slot />
         </div>
       {/if}
@@ -45,7 +50,7 @@
 
 <style>
   /* Add a subtle transition for the background opacity */
-  .bg-black\/80 {
+  .bg-\[var\(--bg-card\)\] {
     transition: background-color 0.2s ease;
   }
 </style>

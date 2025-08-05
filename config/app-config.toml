@@ -1,0 +1,28 @@
+[network]
+name = "BERACHAIN"
+rpc = "https://rpc.berachain.com/"
+chain_id = 80094
+testnet_chain_id = 80094  # Using same ID for testnet currently
+
+[branding]
+logo = "https://www.berachain.com/images/icons/logo_white.svg"
+
+[api]
+base_url = "http://localhost:3000/api/sdk/v1.0"
+
+[token]
+gas_symbol = "BERA"
+gas_token_address = "0x6969696969696969696969696969696969696969"
+
+[colors]
+# Primary brand color - Warm honey brown (representing bears)
+primary = "#C8963E"
+# Accent colors for different states
+accent_red = "#E85D4C"    # Warm sunset red
+accent_orange = "#F4A261"  # Golden hour orange
+accent_green = "#4A8C47"   # Fresh grass green
+# Background colors - Earth tones
+bg_dark = "#2C2520"       # Deep earth brown
+bg_card = "#3C332B"       # Light earth brown
+# Border colors - Natural stone
+border = "#4E443A"        # Weathered rock
