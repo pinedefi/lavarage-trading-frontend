@@ -16,7 +16,7 @@
 
   function toggleView() {
     showClosed = !showClosed;
-    startPositionsUpdates(showClosed ? 'closed' : 'open');
+    startPositionsUpdates(showClosed ? 'closed' : 'active');
   }
 
   $: positionsList = showClosed ? $closedPositions : $openPositions;

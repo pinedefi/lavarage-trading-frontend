@@ -91,7 +91,7 @@ export const openPositions = derived(
 
 export const closedPositions = derived(
   positions,
-  ($positions) => $positions.positions.filter((p) => p.status !== 'open')
+  ($positions) => $positions.positions.filter((p) => p.status !== 'active')
 );
 
 export const totalPnL = derived(
@@ -105,10 +105,10 @@ export const totalCollateral = derived(
 );
 
 let updateInterval: NodeJS.Timeout | null = null;
-let updateStatus: 'open' | 'closed' = 'open';
+let updateStatus: 'active' | 'closed' = 'active';
 
 
-export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise<void> {
+export async function loadPositions(status: 'active' | 'closed' = 'active'): Promise<void> {
   const address = get(walletAddress);
   if (!address) return;
 
@@ -148,7 +148,7 @@ export async function loadPositions(status: 'open' | 'closed' = 'open'): Promise
   }
 }
 
-export function startPositionsUpdates(status: 'open' | 'closed' = 'open', interval = 10000) {
+export function startPositionsUpdates(status: 'active' | 'closed' = 'active', interval = 10000) {
   if (!browser) return;
   stopPositionsUpdates();
   updateStatus = status;
